@@ -16,6 +16,9 @@ public:
     bool is_a_constructor(const std::string& line) const {
         return Beautifier::is_a_constructor(line, "Automobile");
     }
+    bool is_a_destructor(const std::string& line) const {
+        return Beautifier::is_a_destructor(line, "Automobile");
+    }
 };
 
 BeautifierTest beautifier(header, source);
@@ -35,17 +38,27 @@ TEST(BeautifierTest, is_a_include) {
 }
 
 TEST(BeautifierTest, is_a_constructor) {
-    std::string class_name = "Automobile";
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile()"));
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile() {"));
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b) {"));
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile();"));
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b);"));
     ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b)"));
-    ASSERT_FALSE(beautifier.is_a_constructor("Automobile::Automobil"));
-    ASSERT_FALSE(beautifier.is_a_constructor("Autamobile::Automobile"));
     ASSERT_TRUE(beautifier.is_a_constructor("static Automobile::Automobile()"));
     ASSERT_TRUE(beautifier.is_a_constructor("virtual Automobile::Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_constructor("explicit Automobile::Automobile()"));
+    ASSERT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile()"));
+    ASSERT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile  \n"));
+    ASSERT_FALSE(beautifier.is_a_constructor("Automobile::Automobil"));
+    ASSERT_FALSE(beautifier.is_a_constructor("Autamobile::Automobile"));
     
+}
+
+TEST(BeautifierTest, is_a_destructor) {
+    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile()"));
+    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile() {"));
+    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile();"));
+    ASSERT_FALSE(beautifier.is_a_destructor("Automobile::~Automobil"));
+    ASSERT_FALSE(beautifier.is_a_destructor("Autamobile::~Automobile"));
+    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile  ()"));
+    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::  ~Automobile() {"));
 }

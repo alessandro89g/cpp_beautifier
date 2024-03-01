@@ -50,8 +50,27 @@ bool Beautifier::is_a_include(const std::string& line) const {
 bool Beautifier::is_a_constructor(const std::string& line, std::string class_name = "") const {
     if (class_name == "")
         class_name = _class.name;
-    std::string constructor_scheleton = ".*" + class_name + "::" + class_name + "\\s*.*";
+    std::string keywords = "\\s*(((static|virtual|explicit|inline|constexpr)\\s*)?)+";
+    std::string constructor_scheleton = 
+            keywords + 
+            "(" +
+            class_name + 
+            "::\\s*)?" + 
+            class_name + 
+            "\\s*(\\(|\\n).*";  // after constructor name there is usually something 
     return std::regex_match(line, std::regex(constructor_scheleton));
+}
+
+bool Beautifier::is_a_destructor(const std::string& line, std::string class_name = "") const {
+    if (class_name == "")
+        class_name = _class.name;
+    std::string destructor_scheleton =  
+        "\\s*(" + 
+        class_name +
+        "::\\s*)?" +
+        "~" + class_name +
+        "\\s*\\(\\s*\\).*";
+    return std::regex_match(line, std::regex(destructor_scheleton));
 }
 
 bool Beautifier::is_a_method(const std::string& line) const {
@@ -62,7 +81,3 @@ bool Beautifier::is_a_member(const std::string& line) const {
     return std::regex_match(line, std::regex(".*;"));
 }
 
-
-bool Beautifier::is_a_destructor(const std::string& line) const {
-    return std::regex_match(line, std::regex("^~.*\\(.*\\)\\s*\\{"));
-}
