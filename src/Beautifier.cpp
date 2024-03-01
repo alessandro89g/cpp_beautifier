@@ -19,14 +19,12 @@ void Beautifier::reorder_header() {
 }
 
 void Beautifier::dissect_header() {
-    // extract_includes();
-    // extract_other_lines_before_class();
-    // extract_class();
-    // extract_destructor();
-    // extract_members(); 
-    // extract_methods();
-    // extract_constructors();
-    // extract_other_lines_after_class();
+    _file.open(header);
+    std::string line;
+    while(std::getline(_file, line)) {
+        if (line.find("#include") != std::string::npos)
+            is_a_include(line);
+    }
 }
 
 void Beautifier::clean_string(std::string& str, bool clear_initial_spaces = false) const {
@@ -40,56 +38,62 @@ void Beautifier::clean_string(std::string& str, bool clear_initial_spaces = fals
         // To do
 }
 
-bool Beautifier::is_a_include(const std::string& line) const {
-    return (
-            std::regex_match(line, std::regex("\\s*#include\\s+<.*>"))
-        ||  std::regex_match(line, std::regex("\\s*#include\\s+\".*\""))
-    );
+bool Beautifier::is_a_include(const std::string& line) {
+    DEBUG("Checking if line is an include")
+    DEBUG(line)
+    std::string header_regex = "\\s*#include\\s+(:?<(.*)>|\"(.*)\")";
+    std::regex rgx(header_regex);
+    std::smatch matches;
+    if (std::regex_search(line, matches, rgx)) {
+        DEBUG("Match found")
+        for (size_t i = 0; i < matches.size(); ++i) {
+            DEBUG(matches[i].str())
+        }
+        bool is_system = matches[1].str() == "<" + matches[2].str() + ">";
+        std::string include_name = is_system ? matches[2].str() : matches[3].str();
+        Include include(include_name, is_system);
+        _includes.emplace_back(include);
+        return true;
+    }
+    DEBUG("No match found")
+    return false;
 }
 
-bool Beautifier::is_a_constructor(const std::string& line, std::string class_name = "") const {
-    if (class_name == "")
-        class_name = _class.name;
+bool Beautifier::is_a_constructor(const std::string& line) const {
     const std::string keywords = "\\s*(((static|virtual|explicit|inline|constexpr)\\s*)?)+";
     const std::string constructor_scheleton = 
             keywords + 
             "(" +
-            class_name + 
+            _class.name + 
             "::\\s*)?" + 
-            class_name + 
+            _class.name + 
             "\\s*(\\(|\\n).*";  // after constructor name there is usually something 
     return std::regex_match(line, std::regex(constructor_scheleton));
 }
 
-bool Beautifier::is_a_destructor(const std::string& line, std::string class_name = "") const {
-    if (class_name == "")
-        class_name = _class.name;
+bool Beautifier::is_a_destructor(const std::string& line) const {
     const std::string destructor_scheleton =  
         "\\s*(" + 
-        class_name +
+        _class.name +
         "::\\s*)?" +
-        "~" + class_name +
+        "~" + _class.name +
         "\\s*\\(\\s*\\).*";
     return std::regex_match(line, std::regex(destructor_scheleton));
 }
 
-bool Beautifier::is_a_method(const std::string& line, string class_name) const {
-    if (class_name == "")
-        class_name = _class.name;
+bool Beautifier::is_a_method(const std::string& line) const {
     const std::string keywords = "\\s*(?:(?:virtual|inline|explicit|constexpr|static|friend|override)\\s+)?";
     const std::string allowed_naming = "[a-zA-Z_][a-zA-Z0-9_]*";
     const std::string method_scheleton = 
         "(" +keywords +
-        "((" + class_name + "::(?!" + class_name + ")" + allowed_naming + ")|" +
-        "((?!" + class_name + ")" + allowed_naming + "))).*\\s*";   
+        "((" + _class.name + "::(?!" + _class.name + ")" + allowed_naming + ")|" +
+        "((?!" + _class.name + ")" + allowed_naming + "))).*\\s*";   
     DEBUG(method_scheleton);
     DEBUG("---->" + line);
     return std::regex_match(line, std::regex(method_scheleton));
 }
 
-bool Beautifier::is_a_member(const std::string& line, string class_name) const {
-    if (class_name == "")
-        class_name = _class.name;
+bool Beautifier::is_a_member(const std::string& line) const {
     return std::regex_match(line, std::regex(".*;"));
 }
 
