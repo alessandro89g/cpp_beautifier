@@ -34,6 +34,9 @@ protected:
         string name;
         vector(Class) inheritance_classes;
         AccessSpecifier access; 
+        Class(const string& name = "", AccessSpecifier access = AccessSpecifier::PUBLIC) : name(name), access(access) {}
+        Class(const Class& other) : name(other.name), inheritance_classes(other.inheritance_classes), access(other.access) {}
+        Class(Class&& other) : name(std::move(other.name)), inheritance_classes(std::move(other.inheritance_classes)), access(other.access) {}
     };
     struct Include {
         string name;
@@ -53,7 +56,7 @@ protected:
     struct Destructor {
         string body;
         AccessSpecifier access;
-        Destructor(const string& body, AccessSpecifier access) : body(body), access(access) {}
+        Destructor(const string& body = "", AccessSpecifier access = AccessSpecifier::PUBLIC) : body(body), access(access) {}
         Destructor(const Destructor& other) : body(other.body), access(other.access) {}
         Destructor(Destructor&& other) : body(std::move(other.body)), access(other.access) {}
     };
@@ -93,7 +96,7 @@ protected:
     void dissect_header();
     void dissect_source();
     
-    void extract_includes();
+    bool extract_include(const string& line);
     void extract_other_lines_before_class();
     void extract_class();
     void extract_constructors();
@@ -104,7 +107,6 @@ protected:
 
     void clean_string(string& str, bool clear_initial_spaces) const;
     
-    bool is_a_include       (const string& line);
     bool is_a_constructor   (const string& line) const;
     bool is_a_destructor    (const string& line) const;
     bool is_a_method        (const string& line) const;

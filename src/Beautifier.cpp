@@ -2,6 +2,7 @@
 
 #define DEBUG(x) std::cout << x << std::endl;
 
+
 Beautifier::Beautifier(const std::string& header, const std::string& source)
     : header(header), source(source) {
 }
@@ -19,11 +20,15 @@ void Beautifier::reorder_header() {
 }
 
 void Beautifier::dissect_header() {
+    DEBUG("Dissecting header")
     _file.open(header);
+    if (!_file.is_open()) {
+        throw std::runtime_error("File " + header.string() + " not found");
+    }
     std::string line;
     while(std::getline(_file, line)) {
         if (line.find("#include") != std::string::npos)
-            is_a_include(line);
+            extract_include(line);
     }
 }
 
@@ -38,7 +43,7 @@ void Beautifier::clean_string(std::string& str, bool clear_initial_spaces = fals
         // To do
 }
 
-bool Beautifier::is_a_include(const std::string& line) {
+bool Beautifier::extract_include(const std::string& line) {
     DEBUG("Checking if line is an include")
     DEBUG(line)
     std::string header_regex = "\\s*#include\\s+(:?<(.*)>|\"(.*)\")";
