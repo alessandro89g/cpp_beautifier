@@ -9,11 +9,9 @@ const std::string source = "test_files/src/class.cpp";
 class BeautifierTest : public Beautifier{
 public:    
     BeautifierTest(const std::string& header, const std::string& source) : 
-        Beautifier(header, source) {}
-    
-    void dissect_header() {
-        Beautifier::dissect_header();
-    }
+        Beautifier(header, source) {
+            dissect_header();
+        }
 
     std::vector<std::pair<std::string, bool>>  includes() const {
         std::vector<std::pair<std::string, bool>> includes;
@@ -32,8 +30,6 @@ TEST(BeautifierTest, ParametricConstructor) {
 }
 
 TEST(BeautifierTest, dissect_header) {
-    beautifier.dissect_header();
-    #include <string>
 // From the file: test_files/headers/class.hpp
 // 
 // #include <string>

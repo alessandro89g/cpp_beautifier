@@ -32,11 +32,8 @@ protected:
     };
     struct Class {
         string name;
-        vector(Class) inheritance_classes;
-        AccessSpecifier access; 
-        Class(const string& name = "", AccessSpecifier access = AccessSpecifier::PUBLIC) : name(name), access(access) {}
-        Class(const Class& other) : name(other.name), inheritance_classes(other.inheritance_classes), access(other.access) {}
-        Class(Class&& other) : name(std::move(other.name)), inheritance_classes(std::move(other.inheritance_classes)), access(other.access) {}
+        #define class_inherited std::pair<std::string, AccessSpecifier>
+        vector(class_inherited) inheriting_from_classes_vector;
     };
     struct Include {
         string name;
@@ -98,7 +95,7 @@ protected:
     
     bool extract_include(const string& line);
     void extract_other_lines_before_class();
-    void extract_class();
+    bool extract_class(const string& line);
     void extract_constructors();
     void extract_destructor();
     void extract_members();

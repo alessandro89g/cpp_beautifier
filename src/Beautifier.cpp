@@ -27,8 +27,13 @@ void Beautifier::dissect_header() {
     }
     std::string line;
     while(std::getline(_file, line)) {
-        if (line.find("#include") != std::string::npos)
-            extract_include(line);
+        bool processed = false;
+        if (line.find("#include") != std::string::npos) {
+            processed = extract_include(line);
+        }
+        if (!processed && std::regex_match(line, std::regex("\\s*class\\s+.*\\{"))) {
+            extract_class(line);
+        }
     }
 }
 
@@ -58,6 +63,25 @@ bool Beautifier::extract_include(const std::string& line) {
         std::string include_name = is_system ? matches[2].str() : matches[3].str();
         Include include(include_name, is_system);
         _includes.emplace_back(include);
+        return true;
+    }
+    DEBUG("No match found")
+    return false;
+}
+
+bool Beautifier::extract_class(const std::string& line) {
+    DEBUG("Checking if line is a class")
+    DEBUG(line)
+    std::string class_regex = "\\s*class\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:?\\s*public\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*(:?\\s*private\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*(:?\\s*protected\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*\\{";
+    std::regex rgx(class_regex);
+    std::smatch matches;
+    if (std::regex_search(line, matches, rgx)) {
+        DEBUG("Match found")
+        for (size_t i = 0; i < matches.size(); ++i) {
+            DEBUG(matches[i].str())
+        }
+        std::string class_name = matches[1].str();
+        _class.name = class_name;
         return true;
     }
     DEBUG("No match found")
