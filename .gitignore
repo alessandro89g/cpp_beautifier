@@ -2,3 +2,4 @@ build/*
 cpp_beautifier
 .vscode
 build
+.vscode/*
