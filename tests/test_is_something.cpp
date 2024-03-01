@@ -19,46 +19,65 @@ public:
     bool is_a_destructor(const std::string& line) const {
         return Beautifier::is_a_destructor(line, "Automobile");
     }
+    bool is_a_method(const std::string& line) const {
+        return Beautifier::is_a_method(line, "Automobile");
+    }
 };
 
 BeautifierTest beautifier(header, source);
 
 TEST(BeautifierTest, ParametricConstructor) {
-    ASSERT_EQ(beautifier.getHeader(), header);
-    ASSERT_EQ(beautifier.getSource(), source);
+    EXPECT_EQ(beautifier.getHeader(), header);
+    EXPECT_EQ(beautifier.getSource(), source);
 }   
 
 TEST(BeautifierTest, is_a_include) {
-    ASSERT_TRUE(beautifier.is_a_include("#include <iostream>"));
-    ASSERT_TRUE(beautifier.is_a_include("#include \"automobile.h\""));
-    ASSERT_FALSE(beautifier.is_a_include("class Automobile {"));
-    ASSERT_TRUE(beautifier.is_a_include("   #include <iostream>"));
-    ASSERT_TRUE(beautifier.is_a_include("\t  #include \"automobile.h\""));
-    ASSERT_FALSE(beautifier.is_a_include("#include asda"));
+    EXPECT_TRUE(beautifier.is_a_include("#include <iostream>"));
+    EXPECT_TRUE(beautifier.is_a_include("#include \"automobile.h\""));
+    EXPECT_FALSE(beautifier.is_a_include("class Automobile {"));
+    EXPECT_TRUE(beautifier.is_a_include("   #include <iostream>"));
+    EXPECT_TRUE(beautifier.is_a_include("\t  #include \"automobile.h\""));
+    EXPECT_FALSE(beautifier.is_a_include("#include asda"));
 }
 
 TEST(BeautifierTest, is_a_constructor) {
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile() {"));
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b) {"));
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile();"));
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b);"));
-    ASSERT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b)"));
-    ASSERT_TRUE(beautifier.is_a_constructor("static Automobile::Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_constructor("virtual Automobile::Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile  \n"));
-    ASSERT_FALSE(beautifier.is_a_constructor("Automobile::Automobil"));
-    ASSERT_FALSE(beautifier.is_a_constructor("Autamobile::Automobile"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile()"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile() {"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b) {"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile();"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b);"));
+    EXPECT_TRUE(beautifier.is_a_constructor("Automobile::Automobile(int a, int b)"));
+    EXPECT_TRUE(beautifier.is_a_constructor("static Automobile::Automobile()"));
+    EXPECT_TRUE(beautifier.is_a_constructor("virtual Automobile::Automobile()"));
+    EXPECT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile()"));
+    EXPECT_TRUE(beautifier.is_a_constructor("constexpr explicit Automobile::Automobile  \n"));
+    EXPECT_FALSE(beautifier.is_a_constructor("Automobile::Automobil"));
+    EXPECT_FALSE(beautifier.is_a_constructor("Autamobile::Automobile"));
     
 }
 
 TEST(BeautifierTest, is_a_destructor) {
-    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile()"));
-    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile() {"));
-    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile();"));
-    ASSERT_FALSE(beautifier.is_a_destructor("Automobile::~Automobil"));
-    ASSERT_FALSE(beautifier.is_a_destructor("Autamobile::~Automobile"));
-    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile  ()"));
-    ASSERT_TRUE(beautifier.is_a_destructor("Automobile::  ~Automobile() {"));
+    EXPECT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile()"));
+    EXPECT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile() {"));
+    EXPECT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile();"));
+    EXPECT_FALSE(beautifier.is_a_destructor("Automobile::~Automobil"));
+    EXPECT_FALSE(beautifier.is_a_destructor("Autamobile::~Automobile"));
+    EXPECT_TRUE(beautifier.is_a_destructor("Automobile::~Automobile  ()"));
+    EXPECT_TRUE(beautifier.is_a_destructor("Automobile::  ~Automobile() {"));
+}
+
+TEST(BeautifierTest, is_a_method) {
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start()"));
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start() {"));
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start(int a, int b) {"));
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start();"));
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start(int a, int b);"));
+    EXPECT_TRUE(beautifier.is_a_method("void Automobile::start(int a, int b)"));
+    EXPECT_TRUE(beautifier.is_a_method("static void Automobile::start()"));
+    EXPECT_TRUE(beautifier.is_a_method("virtual void Automobile::start()"));
+    EXPECT_TRUE(beautifier.is_a_method("constexpr explicit void Automobile::start()"));
+    EXPECT_TRUE(beautifier.is_a_method("constexpr explicit void Automobile::start  \n"));
+    EXPECT_TRUE(beautifier.is_a_method("Automobile::start"));
+    EXPECT_FALSE(beautifier.is_a_method("Autamobile::start"));
+    EXPECT_FALSE(beautifier.is_a_method("void Automobile::1_cjoin()"));
 }

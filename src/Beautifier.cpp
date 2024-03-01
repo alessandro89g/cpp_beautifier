@@ -50,8 +50,8 @@ bool Beautifier::is_a_include(const std::string& line) const {
 bool Beautifier::is_a_constructor(const std::string& line, std::string class_name = "") const {
     if (class_name == "")
         class_name = _class.name;
-    std::string keywords = "\\s*(((static|virtual|explicit|inline|constexpr)\\s*)?)+";
-    std::string constructor_scheleton = 
+    const std::string keywords = "\\s*(((static|virtual|explicit|inline|constexpr)\\s*)?)+";
+    const std::string constructor_scheleton = 
             keywords + 
             "(" +
             class_name + 
@@ -64,7 +64,7 @@ bool Beautifier::is_a_constructor(const std::string& line, std::string class_nam
 bool Beautifier::is_a_destructor(const std::string& line, std::string class_name = "") const {
     if (class_name == "")
         class_name = _class.name;
-    std::string destructor_scheleton =  
+    const std::string destructor_scheleton =  
         "\\s*(" + 
         class_name +
         "::\\s*)?" +
@@ -73,11 +73,23 @@ bool Beautifier::is_a_destructor(const std::string& line, std::string class_name
     return std::regex_match(line, std::regex(destructor_scheleton));
 }
 
-bool Beautifier::is_a_method(const std::string& line) const {
-    return std::regex_match(line, std::regex(".*\\(.*\\)\\s*\\{"));
+bool Beautifier::is_a_method(const std::string& line, string class_name) const {
+    if (class_name == "")
+        class_name = _class.name;
+    const std::string keywords = "\\s*(?:(?:virtual|inline|explicit|constexpr|static|friend|override)\\s+)?";
+    const std::string allowed_naming = "[a-zA-Z_][a-zA-Z0-9_]*";
+    const std::string method_scheleton = 
+        "(" +keywords +
+        "((" + class_name + "::(?!" + class_name + ")" + allowed_naming + ")|" +
+        "((?!" + class_name + ")" + allowed_naming + "))).*\\s*";   
+    DEBUG(method_scheleton);
+    DEBUG("---->" + line);
+    return std::regex_match(line, std::regex(method_scheleton));
 }
 
-bool Beautifier::is_a_member(const std::string& line) const {
+bool Beautifier::is_a_member(const std::string& line, string class_name) const {
+    if (class_name == "")
+        class_name = _class.name;
     return std::regex_match(line, std::regex(".*;"));
 }
 

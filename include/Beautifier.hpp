@@ -91,8 +91,8 @@ protected:
     bool is_a_include       (const string& line) const;
     bool is_a_constructor   (const string& line, string class_name) const;
     bool is_a_destructor    (const string& line, string class_name) const;
-    bool is_a_method        (const string& line) const;
-    bool is_a_member        (const string& line) const;
+    bool is_a_method        (const string& line, string class_name) const;
+    bool is_a_member        (const string& line, string class_name) const;
 
     void write_header(const vector(string)& lines) const;
     void write_source(const vector(string)& lines) const;
