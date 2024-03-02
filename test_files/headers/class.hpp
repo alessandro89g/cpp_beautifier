@@ -9,7 +9,9 @@
 
 namespace fs = std::filesystem;
 
-class Beautifier : public fs::path, protected std::string, std::vector<std::string> {
+class Beautifier : public fs::path, protected std::string, 
+std::vector<std::string> 
+{
     #define vector(a) std::vector<a>
     using string = std::string;
 

@@ -65,7 +65,7 @@ TEST(BeautifierTest, extract_class) {
         }
     };
     Beautifier::Class beautifier_class = beautifier.get_class();
-    EXPECT_EQ(beautifier_class.name, expected.name);
+    ASSERT_EQ(beautifier_class.name, expected.name);
     for (size_t i = 0; i < expected.inheritance_classes.size(); ++i) {
         EXPECT_EQ(beautifier_class.inheritance_classes[i].first, expected.inheritance_classes[i].first);
         EXPECT_EQ(beautifier_class.inheritance_classes[i].second, expected.inheritance_classes[i].second);
