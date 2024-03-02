@@ -15,13 +15,13 @@ public:
 
     std::vector<std::pair<std::string, bool>>  includes() const {
         std::vector<std::pair<std::string, bool>> includes;
-        for (const auto& i : _includes) {
+        for (const auto& i : m_includes) {
             includes.push_back(std::make_pair(i.name, i.is_system));
         }
         return includes;
     }
     Class get_class() const {
-        return _class;
+        return m_class;
     }
 };
 
@@ -58,6 +58,7 @@ TEST(BeautifierTest, extract_class) {
 // class Beautifier : public fs::path, protected std::string, std::vector<std::string> 
     Beautifier::Class expected = {
         "Beautifier",
+        "",
         {
             {"fs::path", Beautifier::AccessSpecifier::PUBLIC},
             {"std::string", Beautifier::AccessSpecifier::PROTECTED},
@@ -65,9 +66,9 @@ TEST(BeautifierTest, extract_class) {
         }
     };
     Beautifier::Class beautifier_class = beautifier.get_class();
-    ASSERT_EQ(beautifier_class.name, expected.name);
-    for (size_t i = 0; i < expected.inheritance_classes.size(); ++i) {
-        EXPECT_EQ(beautifier_class.inheritance_classes[i].first, expected.inheritance_classes[i].first);
-        EXPECT_EQ(beautifier_class.inheritance_classes[i].second, expected.inheritance_classes[i].second);
+    ASSERT_EQ(beautifier_class.m_name, expected.m_name);
+    for (size_t i = 0; i < expected.m_inheritance_classes.size(); ++i) {
+        EXPECT_EQ(beautifier_class.m_inheritance_classes[i].first, expected.m_inheritance_classes[i].first);
+        EXPECT_EQ(beautifier_class.m_inheritance_classes[i].second, expected.m_inheritance_classes[i].second);
     }
 }

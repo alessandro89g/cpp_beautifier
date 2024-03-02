@@ -50,9 +50,10 @@ class Beautifier {
 
 public:
     struct Class {
-        string name;
+        string m_name;
+        string m_namespace;
         #define class_inherited std::pair<string, AccessSpecifier>
-        vector(class_inherited) inheritance_classes;
+        vector(class_inherited) m_inheritance_classes;
     };
     struct Include {
         string name;
@@ -62,50 +63,55 @@ public:
         Include(Include&& other) : name(std::move(other.name)), is_system(other.is_system) {}
     };
     struct Constructor {
-        string name;
-        string body;
-        AccessSpecifier access;
-        Constructor(const string& name, const string& body, AccessSpecifier access) : name(name), body(body), access(access) {}
-        Constructor(const Constructor& other) : name(other.name), body(other.body), access(other.access) {}
-        Constructor(Constructor&& other) : name(std::move(other.name)), body(std::move(other.body)), access(other.access) {}
+        string m_name;
+        string m_body;
+        string m_namespace;
+        AccessSpecifier m_access;
+        Constructor(const string& name, const string& body, const string& Namespace, AccessSpecifier access) : m_name(name), m_body(body), m_namespace(Namespace), m_access(access) {}
+        Constructor(const Constructor& other) : m_name(other.m_name), m_body(other.m_body), m_namespace(other.m_namespace), m_access(other.m_access) {}
     };
     struct Destructor {
-        string body;
-        AccessSpecifier access;
-        Destructor(const string& body = "", AccessSpecifier access = AccessSpecifier::PUBLIC) : body(body), access(access) {}
-        Destructor(const Destructor& other) : body(other.body), access(other.access) {}
-        Destructor(Destructor&& other) : body(std::move(other.body)), access(other.access) {}
+        string m_body;
+        string m_namespace;
+        AccessSpecifier m_access;
+        Destructor(const string& Namespace, const string& body = "", AccessSpecifier access = AccessSpecifier::PUBLIC) : m_body(body), m_namespace(Namespace), m_access(access) {}
+        Destructor(const Destructor& other) : m_body(other.m_body), m_namespace(other.m_namespace), m_access(other.m_access) {}
+        Destructor(Destructor&& other) : m_body(std::move(other.m_body)), m_namespace(std::move(other.m_namespace)), m_access(other.m_access) {}
     };
     struct Member {
-        string name;
-        string body;
-        AccessSpecifier access;
-        Member(const string& name, const string& body, AccessSpecifier access) : name(name), body(body), access(access) {}
-        Member(const Member& other) : name(other.name), body(other.body), access(other.access) {}
-        Member(Member&& other) : name(std::move(other.name)), body(std::move(other.body)), access(other.access) {}
+        string m_name;
+        string m_body;
+        string m_namespace;
+        AccessSpecifier m_access;
+        Member(const string& name, const string& body, const string& Namespace, AccessSpecifier access) : m_name(name), m_body(body), m_namespace(Namespace), m_access(access) {}
+        Member(const Member& other) : m_name(other.m_name), m_body(other.m_body), m_namespace(other.m_namespace), m_access(other.m_access) {}
+        Member(Member&& other) : m_name(std::move(other.m_name)), m_body(std::move(other.m_body)), m_namespace(std::move(other.m_namespace)), m_access(other.m_access) {}
     };
     struct Method {
-        string name;
-        string body;
-        AccessSpecifier access;
-        Method(const string& name, const string& body, AccessSpecifier access) : name(name), body(body), access(access) {}
-        Method(const Method& other) : name(other.name), body(other.body), access(other.access) {}
-        Method(Method&& other) : name(std::move(other.name)), body(std::move(other.body)), access(other.access) {}
+        string m_name;
+        string m_body;
+        string m_namespace;
+        AccessSpecifier m_access;
+        Method(const string& name, const string& body,const string Namespace, AccessSpecifier access) : m_name(name), m_body(body), m_namespace(Namespace), m_access(access) {}
+        Method(const Method& other) : m_name(other.m_name), m_body(other.m_body), m_namespace(other.m_namespace), m_access(other.m_access) {}
+        Method(Method&& other) : m_name(std::move(other.m_name)), m_body(std::move(other.m_body)), m_namespace(std::move(other.m_namespace)), m_access(other.m_access) {}
     };
 
 protected:
-    const fs::path header;
-    const fs::path source;
-    std::ifstream _file;
+    const fs::path m_header;
+    const fs::path m_source;
+    std::ifstream m_file;
 
-    vector(Include) _includes;
-    vector(string) _other_before_class;
-    Class _class;
-    vector(Constructor) _constructors;
-    vector(Member) _members;
-    vector(Method) _methods;
-    Destructor _destructor;
-    vector(string) _other_after_class;
+    vector(Include) m_includes;
+    vector(string) m_other_before_class;
+    Class m_class;
+    vector(Constructor) m_constructors;
+    vector(Member) m_members;
+    vector(Method) m_methods;
+    Destructor m_destructor;
+    vector(string) m_other_after_class;
+
+    vector(string) m_namespaces;
 
 
 protected:
