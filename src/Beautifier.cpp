@@ -2,9 +2,22 @@
 
 #define DEBUG(x) std::cout << x << std::endl;
 
+std::vector<std::string> split_string(const std::string& str, char delimiter = ',') {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream token_stream(str);
+    while (std::getline(token_stream, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
 
 Beautifier::Beautifier(const std::string& header, const std::string& source)
     : header(header), source(source) {
+    DEBUG("Parametric constructor")
+    std::string class_inheritance = string_inheritance_and_access;
+    DEBUG(class_inheritance)
 }
 
 std::string Beautifier::getHeader() const {
@@ -72,7 +85,8 @@ bool Beautifier::extract_include(const std::string& line) {
 bool Beautifier::extract_class(const std::string& line) {
     DEBUG("Checking if line is a class")
     DEBUG(line)
-    std::string class_regex = "\\s*class\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:?\\s*public\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*(:?\\s*private\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*(:?\\s*protected\\s+([a-zA-Z_][a-zA-Z0-9_]*))?\\s*\\{";
+    std::string allowed_naming = "([a-zA-Z_][a-zA-Z0-9_]*)";
+    std::string class_regex = "\\s*class\\s+" + allowed_naming;
     std::regex rgx(class_regex);
     std::smatch matches;
     if (std::regex_search(line, matches, rgx)) {
@@ -82,7 +96,42 @@ bool Beautifier::extract_class(const std::string& line) {
         }
         std::string class_name = matches[1].str();
         _class.name = class_name;
-        return true;
+        DEBUG("Class name: " + class_name)
+    } else {
+        return false;
+    }
+
+    rgx.assign("\\s*class\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*:\\s*(.+)\\s\\{");
+    DEBUG("CHECKING INHERITANCE")
+    if (std::regex_match(line, matches, rgx)) {
+        DEBUG("Match found")
+        if (matches.size() != 3) {
+            throw std::runtime_error("Error extracting inheritance");
+        }
+        std::string other = matches[2].str();
+        DEBUG("Inheritance found: " + other)
+        std::vector<std::string> inheritance = split_string(other);
+        for (auto& i : inheritance) {
+            clean_string(i, true);
+            if (std::regex_match(i, matches, std::regex(string_inheritance_and_access))) {
+                if (matches.size() != 14) {
+                    throw std::runtime_error("Error extracting inheritance");
+                }
+                std::string access_specifier = matches[3].str();
+                AccessSpecifier access;
+                if (access_specifier == "public") {
+                    access = AccessSpecifier::PUBLIC;
+                } else if (access_specifier == "protected") {
+                    access = AccessSpecifier::PROTECTED;
+                } else {
+                    access = AccessSpecifier::PRIVATE;
+                }
+
+                std::string class_name = matches[4].str();
+                _class.inheritance_classes.emplace_back(std::make_pair(class_name, access));
+            }
+            return true;
+        }
     }
     DEBUG("No match found")
     return false;

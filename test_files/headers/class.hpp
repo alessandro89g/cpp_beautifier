@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-class Beautifier {
+class Beautifier : public fs::path, protected std::string, std::vector<std::string> {
     #define vector(a) std::vector<a>
     using string = std::string;
 
@@ -33,7 +33,6 @@ protected:
     struct Class {
         string name;
         vector(Class) inheritance_classes;
-        AccessSpecifier access; 
     };
     struct Include {
         string name;

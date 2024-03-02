@@ -9,6 +9,16 @@
 
 namespace fs = std::filesystem;
 
+#define variable_name  std::string("([a-zA-Z_][a-zA-Z0-9_]*)")
+#define variable_name_with_namespace  std::string("((" + variable_name + "\\s*::\\s*)?" \
+                                                    + variable_name + ")")
+
+#define variable_name_with_template std::string("(" + variable_name_with_namespace + \
+                                                "(<" + variable_name_with_namespace + ">)?)")
+
+#define string_inheritance_and_access  std::string("(((public|private|protected)\\s*)?" \
+                                            + variable_name_with_template + ")$")
+
 class Beautifier {
     #define vector(a) std::vector<a>
     using string = std::string;
@@ -17,6 +27,19 @@ class Beautifier {
         Beautifier() = delete;
         Beautifier(const string& header, const string& source);
         
+        enum class AccessSpecifier {
+            PUBLIC,
+            PROTECTED,
+            PRIVATE
+        };
+
+        struct Class;
+        struct Include;
+        struct Constructor;
+        struct Destructor;
+        struct Member;
+        struct Method;
+
         void reorder_source();
         void reorder_header();
         void beautify();
@@ -24,16 +47,12 @@ class Beautifier {
         string getHeader() const;
         string getSource() const;
 
-protected:
-    enum class AccessSpecifier {
-        PUBLIC,
-        PRIVATE,
-        PROTECTED
-    };
+
+public:
     struct Class {
         string name;
-        #define class_inherited std::pair<std::string, AccessSpecifier>
-        vector(class_inherited) inheriting_from_classes_vector;
+        #define class_inherited std::pair<string, AccessSpecifier>
+        vector(class_inherited) inheritance_classes;
     };
     struct Include {
         string name;

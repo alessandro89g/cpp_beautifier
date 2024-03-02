@@ -20,6 +20,9 @@ public:
         }
         return includes;
     }
+    Class get_class() const {
+        return _class;
+    }
 };
 
 BeautifierTest beautifier(header, source);
@@ -29,7 +32,7 @@ TEST(BeautifierTest, ParametricConstructor) {
     EXPECT_EQ(beautifier.getSource(), source);
 }
 
-TEST(BeautifierTest, dissect_header) {
+TEST(BeautifierTest, extract_include) {
 // From the file: test_files/headers/class.hpp
 // 
 // #include <string>
@@ -47,4 +50,24 @@ TEST(BeautifierTest, dissect_header) {
         {"vector", true}
     };
     EXPECT_EQ(beautifier.includes(), expected);
+}
+
+TEST(BeautifierTest, extract_class) {
+// From the file: test_files/headers/class.hpp
+//
+// class Beautifier : public fs::path, protected std::string, std::vector<std::string> 
+    Beautifier::Class expected = {
+        "Beautifier",
+        {
+            {"fs::path", Beautifier::AccessSpecifier::PUBLIC},
+            {"std::string", Beautifier::AccessSpecifier::PROTECTED},
+            {"std::vector<std::string>", Beautifier::AccessSpecifier::PRIVATE}
+        }
+    };
+    Beautifier::Class beautifier_class = beautifier.get_class();
+    EXPECT_EQ(beautifier_class.name, expected.name);
+    for (size_t i = 0; i < expected.inheritance_classes.size(); ++i) {
+        EXPECT_EQ(beautifier_class.inheritance_classes[i].first, expected.inheritance_classes[i].first);
+        EXPECT_EQ(beautifier_class.inheritance_classes[i].second, expected.inheritance_classes[i].second);
+    }
 }
