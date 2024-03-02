@@ -27,7 +27,7 @@ or
 
 If they are in different folders you have to pass the relative or absolute path to both files.
 ``` bash  
-  cpp_beautifier <class.h> <class.cpp>
+  cpp_beautifier <path_header/class.h> <path_source/class.cpp>
 ```
 
 ## Running the Tests
