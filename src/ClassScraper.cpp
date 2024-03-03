@@ -45,6 +45,12 @@ void ClassScraper::dissect_header() {
     string line;
     while (getline(file, line)) {
         line_number++;
+        if (std::regex_match(line, std::regex(COMMENT_LINE))) { // Replace std::match_regex with std::regex_match
+            sh_ptr<Block> comment = std::make_shared<Block>(std::vector<string>{line}, line_number, "", 0);
+            DEBUG("Extracting comment: " << line)
+            continue;
+        }
+
         for (const auto& c : line) {
             if (c == '{') {
                 m_depth++;
@@ -56,6 +62,7 @@ void ClassScraper::dissect_header() {
 
             }
         }
+        
         if (line.find("#include") != string::npos) {
             clean_string(line);
             DEBUG("Extracting include: " << line)

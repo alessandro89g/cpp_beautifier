@@ -18,6 +18,7 @@ using std::pair;
 #define VALID_NAME "([a-zA-Z_][a-zA-Z0-9_]*)"
 #define VALID_HEADER "((\\s*#include\\s+<" VALID_NAME ">)|(\\s*#include\\s+\"(" VALID_NAME "\\.[h|hpp])\"))" 
 #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
+#define COMMENT_LINE "\\s*//.*"
 
 
 
