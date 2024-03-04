@@ -14,18 +14,19 @@ namespace fs = std::filesystem;
 class Beautifier : public fs::path, protected std::string, 
 std::vector<std::string> 
 {
+    #define vector(a) std::vector<a>
+    using string = std::string;
 
     public:
         Beautifier() = delete;
-        Beautifier(const std::string& header, 
-                const std::string& source);
+        Beautifier(const string& header,  const string& source);
         
         void reorder_source();
         void reorder_header();
         void beautify();
 
-        std::string getHeader() const;
-        std::string getSource() const;
+        string getHeader() const;
+        string getSource() const;
 
 protected:
     enum class AccessSpecifier {
@@ -34,30 +35,30 @@ protected:
         PROTECTED
     };
     struct Class {
-        std::string name;
-        std::vector<Class> inheritance_classes;
+        string name;
+        vector(Class) inheritance_classes;
     };
     struct Include {
-        std::string name;
+        string name;
         bool is_system;
     };
     struct Constructor {
-        std::string name;
-        std::string body;
+        string name;
+        string body;
         AccessSpecifier access;
     };
     struct Destructor {
-        std::string body;
+        string body;
         AccessSpecifier access;
     };
     struct Member {
-        std::string name;
-        std::string body;
+        string name;
+        string body;
         AccessSpecifier access;
     };
     struct Method {
-        std::string name;
-        std::string body;
+        string name;
+        string body;
         AccessSpecifier access;
     };
 
@@ -65,14 +66,14 @@ protected:
     const fs::path header;
     const fs::path source;
 
-    std::vector<Include> includes;
-    std::vector<std::string> other_lines_before_class;
+    vector(Include) includes;
+    vector(string) other_lines_before_class;
     Class _class;
-    std::vector<Constructor> _constructors;
-    std::vector<Member> _members;
-    std::vector<Method> _methods;
+    vector(Constructor) _constructors;
+    vector(Member) _members;
+    vector(Method) _methods;
     Destructor destructor;
-    std::vector<std::string> other_lines_after_class;
+    vector(string) other_lines_after_class;
 
 
 protected:
@@ -88,16 +89,16 @@ protected:
     void extract_methods();
     void extract_other_lines_after_class();
 
-    void clean_string(std::string& str, bool clear_initial_spaces) const;
+    void clean_string(string& str, bool clear_initial_spaces) const;
     
-    bool is_a_include       (const std::string& line) const;
-    bool is_a_constructor   (const std::string& line, std::string class_name) const;
-    bool is_a_destructor    (const std::string& line, std::string class_name) const;
-    bool is_a_method        (const std::string& line, std::string class_name) const;
-    bool is_a_member        (const std::string& line, std::string class_name) const;
+    bool is_a_include       (const string& line) const;
+    bool is_a_constructor   (const string& line, string class_name) const;
+    bool is_a_destructor    (const string& line, string class_name) const;
+    bool is_a_method        (const string& line, string class_name) const;
+    bool is_a_member        (const string& line, string class_name) const;
 
-    void write_header(const std::vector<std::string>& lines) const;
-    void write_source(const std::vector<std::string>& lines) const;
+    void write_header(const vector(string)& lines) const;
+    void write_source(const vector(string)& lines) const;
      
     
 };
