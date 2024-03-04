@@ -1,4 +1,4 @@
-#include "FileReader.h"
+#include "ClassScraper.h"
 
 #define DEBUG(...)  cout << __VA_ARGS__ << endl;
 
@@ -6,7 +6,9 @@
 
 
 int main(int argc, char const *argv[]) {
-    FileReader file_reader(argv[1]);
+    DEBUG("STARTED");
+    ifstream file(argv[1]);
+    ClassScraper file_reader(file);
     
     string text = file_reader.get_file_content();
     
@@ -22,6 +24,7 @@ int main(int argc, char const *argv[]) {
         DEBUG("Class " << pos << ": " << class_)
     }
 
+    DEBUG("FINISHED");
 
     return 0;
 }

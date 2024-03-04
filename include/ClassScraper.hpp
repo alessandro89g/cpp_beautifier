@@ -141,8 +141,8 @@ protected:
         UNION,
         ENUM,
         NAMESPACE,
-        METHOD,
-        MEMBER,
+        METHOD_RGX,
+        MEMBER_RGX,
         CONSTRUCTOR,
         DESTRUCTOR
     };
