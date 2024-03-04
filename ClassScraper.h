@@ -39,7 +39,7 @@ protected:
 
         while(regex_search(text,match,pattern)) {
             methods.push_back(match.str());
-            Method method = read_method(match.str(), 0, 0, Access::PUBLIC);
+            Method method = read_method(match.str(), 0, Access::PUBLIC);
             text = match.suffix();
         }
     }
