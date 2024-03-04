@@ -11,6 +11,12 @@
 
 namespace fs = std::filesystem;
 
+class AA {
+
+};
+
+class BB;
+
 class Beautifier : public fs::path, protected std::string, 
 std::vector<std::string> 
 {
