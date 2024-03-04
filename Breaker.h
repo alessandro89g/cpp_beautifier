@@ -189,6 +189,7 @@ private:
         for (string& arg : args) {
             clear_string(arg);
         }
+        args.erase(remove_if(args.begin(), args.end(), [](const string& str) { return str == ""; }), args.end());
         return args;
     }
 
@@ -235,11 +236,12 @@ private:
         for (const Modifier& modifier : method.pre_modifiers) {
             ss << modifier << " ";
         }
+        ss << method.return_type << " " << method.name;
         if (method.args.size() == 0) {
             ss << "()";
         }
         else {
-            ss << method.return_type << " " << method.name << " ( ";
+            ss << "( ";
             for (size_t i = 0; i < method.args.size(); i++) {
                 ss << method.args[i];
                 if (i != method.args.size() - 1)
@@ -251,8 +253,10 @@ private:
             ss << " " << modifier;
         }
         if (more_info) {
-            if (method.body != "\n\n") 
+            if (method.body != "") 
                 ss << " {\n " << method.body << "\n}\n\n";
+            else 
+                ss << ";\n\n";
             ss << " Access: " << method.access << '\n';
             ss << " Line start: " << method.line_start << "\n";
             ss << " Line end: " << method.line_end << "\n";
