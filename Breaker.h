@@ -60,14 +60,20 @@ public:
 
 public:
 
-    Method read_method(const string& body, uint line_start, uint line_end, Access access, bool definition_in_header) {
+    Method read_method(const string& body, uint line_start, uint line_end, Access access) {
         Method method;
         method.line_start = line_start;
         method.line_end = line_end;
         method.access = access;
-        method.definition_in_header = definition_in_header;
         method.type = Type::METHOD;
         method.body = body;
+
+        if (body.find_last_of(';') == body[body.length() - 1]) {
+            method.definition_in_header = false;
+        }
+        if (body.find('{') != string::npos) {
+            method.definition_in_header = true;
+        }
 
         string head = body.substr(0, body.find("(") );
         while (head.find_last_of(" ") == head.length() - 1) {
@@ -91,6 +97,8 @@ public:
         DEBUG("RETURN TYPE: " << method.return_type)
         DEBUG("NAME: " << method.name)
         DEBUG("ARGS: " << args)
+        cin.setf(ios::boolalpha);
+        DEBUG("DEFINITION?: " << method.definition_in_header)
 
 
 

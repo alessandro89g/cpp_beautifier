@@ -100,7 +100,9 @@ protected:
     bool is_a_constructor   (const std::string& line, std::string class_name) const;
     bool is_a_destructor    (const std::string& line, std::string class_name) const;
     inline virtual bool is_a_method        (const std::string& line, std::string class_name) const;
-    bool is_a_member        (const std::string& line, std::string class_name) const;
+    bool is_a_member        (const std::string& line, std::string class_name) const {
+        return true;
+    }
 
     void write_header(const std::vector<std::string>& lines) const;
     void write_source(const std::vector<std::string>& lines) const;

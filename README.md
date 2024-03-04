@@ -53,4 +53,5 @@ No one for now.
 
 ## To be done
 
--  For now the methods with two or more modifiers get only the last one.
+-  the methods with two or more modifiers get only the last one.
+-  the methods with definition in the header are not recognized as methods

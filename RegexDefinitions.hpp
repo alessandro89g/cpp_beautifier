@@ -20,7 +20,7 @@
 #define ACCESS_SPECIFIER "(public|protected|private)"
 
 // Definitions to be used in the regex
-#define METHOD_RGX "(" PRE_MODIFIERS _s ")?" METHOD_BASE  POST_MODIFIERS "[;|{]"
+#define METHOD_RGX "(" PRE_MODIFIERS _s ")?" METHOD_BASE  POST_MODIFIERS "[;|\\{]"
 #define CLASS_NAME "\\h*(class|struct)\\s+(" NAME_BASE ")(\\s*:\\s+(" ACCESS_SPECIFIER "?\\s*" TYPE_BASE "\\,?\\s?)*\\s*)?\\s*(;|\\{)"
 
 #define MEMBER_RGX TYPE _S "(" NAME_BASE "))\\h*[,|\\)|;])"
