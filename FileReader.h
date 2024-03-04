@@ -80,8 +80,6 @@ protected:
         }
         file_content = text.str();
         file_content.erase(file_content.end() - 1);
-        find_methods();
-        find_classes();
     }
 
     void export_file(const string& file_path) {
@@ -91,38 +89,6 @@ protected:
         }
         file << file_content;
     }
-
-    void find_methods() {
-        const string pattern_string = METHOD_RGX;
-        smatch match;
-        regex pattern(pattern_string);
-        string text = file_content;
-
-        while(regex_search(text,match,pattern)) {
-            methods.push_back(match.str());
-            text = match.suffix();
-        }
-    }
-
-    void find_classes() {
-        const string pattern_string = CLASS_NAME;
-        smatch match;
-        regex pattern(pattern_string);
-        string text = file_content;
-
-        while(regex_search(text,match,pattern)) {
-            classes.push_back(match.str());
-            text = match.suffix();
-        }
-    }
-    
-    
-
-    
-    vector<string> classes;
-    vector<string> methods;
-    vector<string> members;
-    vector<string> namespaces;
     string file_content;
 
 };

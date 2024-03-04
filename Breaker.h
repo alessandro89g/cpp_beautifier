@@ -12,6 +12,7 @@ using namespace std;
 
 class Breaker {
     #define un_ptr(x) unique_ptr<x>
+    #define DEBUG(...) cout << __VA_ARGS__ << endl;
 public:
     enum Type {
         INCLUDE,
@@ -47,18 +48,61 @@ public:
         uint line_end;
         Type type;
         Access access;
-        Modifiers modifiers;
+        vector<Modifiers> modifiers;
         bool definition_in_header;
     };
     
     struct Method : Definition {
+        string owner_class;
         vector<string> args;
         string return_type;
     };
 
+public:
+
+    Method read_method(const string& body, uint line_start, uint line_end, Access access, bool definition_in_header) {
+        Method method;
+        method.line_start = line_start;
+        method.line_end = line_end;
+        method.access = access;
+        method.definition_in_header = definition_in_header;
+        method.type = Type::METHOD;
+        method.body = body;
+
+        string head = body.substr(0, body.find("(") );
+        while (head.find_last_of(" ") == head.length() - 1) {
+            head = head.substr(0, head.length() - 1);
+        }
+        DEBUG("===============================")
+        DEBUG("HEAD0: " << head)
+        method.name = head.substr(head.find_last_of(" ") + 1);
+        head = head.substr(0, head.find_last_of(" "));
+        DEBUG("HEAD1: " << head)
+        method.return_type = head.substr(head.find_last_of(" ") + 1);
+        if (head.find_last_of(" ") != string::npos)
+            head = head.substr(0, head.find_last_of(" "));
+        else
+            head = "";
+        DEBUG("HEAD2: " << head)
+        string modifiers = head;
+        string args = body.substr(body.find("("), body.find(")") - body.find("(") + 2);
+        DEBUG("HEAD: " << head)
+        DEBUG("MODIFIERS: " << modifiers)
+        DEBUG("RETURN TYPE: " << method.return_type)
+        DEBUG("NAME: " << method.name)
+        DEBUG("ARGS: " << args)
 
 
-    vector<un_ptr(Definition)> _definitions;
+
+        return method;
+    }
+
+
+private:
+    Modifiers read_modifiers(const string& body) {
+        Modifiers modifier;
+        return modifier;
+    }
 
 };
 

@@ -2,8 +2,9 @@
 #define CLASS_SCRAPER_H
 
 #include "FileReader.h"
+#include "Breaker.h"
 
-class ClassScraper : public FileReader {
+class ClassScraper : public FileReader, public Breaker {
 public:
     ClassScraper() = delete;
     ClassScraper(ifstream& file) : FileReader(file) {
@@ -38,6 +39,7 @@ protected:
 
         while(regex_search(text,match,pattern)) {
             methods.push_back(match.str());
+            Method method = read_method(match.str(), 0, 0, Access::PUBLIC, false);
             text = match.suffix();
         }
     }
@@ -61,7 +63,7 @@ protected:
     vector<string> methods;
     vector<string> members;
     vector<string> namespaces;
-
+    vector<un_ptr(Definition)> definitions; 
 
 };
 
