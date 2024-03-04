@@ -53,4 +53,4 @@ No one for now.
 
 ## To be done
 
-For now the methods with two or more modifiers get only the last one.
+-  For now the methods with two or more modifiers get only the last one.
