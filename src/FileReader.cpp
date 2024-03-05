@@ -29,6 +29,9 @@ void FileReader::open_and_read_file(const string& file_path) {
 
 
 void FileReader::read_file(const string& file_string) {
+    // It has problemss with reading files with regex expressions because it cannot 
+    // balance the parenthesis as they do not need to be balanced in the file
+    // Solution: ignore the parentheses in the strings
     stringstream text(file_string);
     string line;
     while (getline(text, line)) {
