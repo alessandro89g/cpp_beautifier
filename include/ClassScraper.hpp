@@ -1,7 +1,7 @@
 #ifndef CLASS_SCRAPER
 #define CLASS_SCRAPER
-#include "FileReader.h"
-#include "Breaker.h"
+#include "FileReader.hpp"
+#include "Breaker.hpp"
 
 class ClassScraper : public FileReader, public Breaker {
 public:

@@ -8,7 +8,7 @@
 #include <regex>
 #include <sstream>
 
-#include "../include/RegexDefinitions.h"
+#include "../include/RegexDefinitions.hpp"
 
 
 class FileReader {

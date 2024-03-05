@@ -1,10 +1,11 @@
-#include "../include/ClassScraper.h"
+#include "../include/ClassScraper.hpp"
 
 using namespace std;
 
 ClassScraper::ClassScraper(ifstream& file) : FileReader(file) {
     scrape();
 }
+
 ClassScraper::ClassScraper(const string& file_string) : FileReader(file_string) {
     scrape();
 }
@@ -21,6 +22,7 @@ void ClassScraper::scrape() {
     find_classes();
     find_methods();
 }
+
 void ClassScraper::find_methods() {
     const string pattern_string = METHOD_RGX;
     smatch match;

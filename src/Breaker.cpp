@@ -1,4 +1,4 @@
-#include "../include/Breaker.h"
+#include "../include/Breaker.hpp"
 
 using namespace std;
 
@@ -34,35 +34,17 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
     while (head.find_last_of(" ") == head.length() - 1) {
         head = head.substr(0, head.length() - 1);
     }
-    // DEBUG("HEAD0: " << head)
     method.name = head.substr(head.find_last_of(" ") + 1);
     head = head.substr(0, head.find_last_of(" "));
-    // DEBUG("HEAD1: " << head)
     method.return_type = head.substr(head.find_last_of(" ") + 1);
     if (head.find_last_of(" ") != string::npos)
         head = head.substr(0, head.find_last_of(" "));
     else
         head = "";
-    // DEBUG("HEAD2: " << head)
     method.pre_modifiers = read_modifiers(head);
     method.args = read_args(string_method.substr(string_method.find("("), string_method.find(")") - string_method.find("(") + 2));
-    // DEBUG("HEAD: " << head)
-    // cout << "MODIFIERS: ";
-    // for (Modifier& modifier : method.pre_modifiers) {
-        // cout << modifier << " ";
-    // }
-    // cout << endl;
-    // DEBUG("RETURN TYPE: " << method.return_type)
-    // DEBUG("NAME: " << method.name)
-    // cout << "ARGS: ";
-    // print_vector(method.args);
-    // DEBUG("DEFINITION?: " << method.definition_in_header)
-    // DEBUG("LINE START: " << method.line_start)
-    // DEBUG("LINE END: " << method.line_end)
 
     DEBUG(method_to_string(method, true))
-
-
 
     return method;
 }

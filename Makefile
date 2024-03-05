@@ -18,15 +18,15 @@ run: $(PROJECT_NAME)
 	@echo "Running binary.."
 	./${PROJECT_NAME} ${ARGS}
 
-src/Breaker.o : src/Breaker.cpp include/Breaker.h
+src/Breaker.o : src/Breaker.cpp include/Breaker.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/FileReader.o: src/FileReader.cpp include/FileReader.h
+src/FileReader.o: src/FileReader.cpp include/FileReader.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/ClassScraper.o:	src/ClassScraper.cpp include/ClassScraper.h
+src/ClassScraper.o:	src/ClassScraper.cpp include/ClassScraper.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 

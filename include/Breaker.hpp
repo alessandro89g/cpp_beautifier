@@ -1,7 +1,7 @@
 #ifndef BREAKER_H
 #define BREAKER_H
 
-#include "../include/RegexDefinitions.h"
+#include "../include/RegexDefinitions.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
