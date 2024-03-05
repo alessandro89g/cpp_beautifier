@@ -7,8 +7,8 @@
 #define NAME_BASE "[a-zA-Z_][a-zA-Z0-9_]*"
 #define NAMESPACE "(?:" NAME_BASE _s "::" _s ")*"
 #define TYPE_BASE "(?:" NAMESPACE NAME_BASE _s "(<.+?>)?)"
-#define CONST "(?:const" _S ")?"
-#define TYPE "(" CONST TYPE_BASE "(?:\\*|&|&&)?)" _s
+#define _CONST "(?:const" _S ")?"
+#define TYPE "(" _CONST TYPE_BASE "(?:\\*|&|&&)?)" _s
 #define ARG "(((?:" TYPE _S NAME_BASE ")))"
 #define ARGS "\\((" _s ARG ",?)*\\)"
 #define METHOD_BASE  "\\b(?!" PRE_MODIFIERS "\\b)" TYPE "\\b(" NAME_BASE ")" _s ARGS

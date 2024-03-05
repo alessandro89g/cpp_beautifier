@@ -24,6 +24,7 @@ public:
     };
 
     enum Modifier {
+        CONST,
         STATIC,
         VIRTUAL,
         ABSTRACT,
@@ -42,22 +43,35 @@ public:
     };
 
     struct Definition {
+        Type type;
+        Access access;
         string name;
+        string implementation_body;
         string body;
         uint line_start;
         uint line_end;
-        Type type;
-        Access access;
         vector<Modifier> pre_modifiers;
         vector<Modifier> post_modifiers;
         bool definition_in_header;
     };
     
+    struct Include {
+        string name;
+        bool is_system;
+    };
+
     struct Method : Definition {
         string owner_class;
         vector<string> args;
         string return_type;
     };
+
+    struct Constructor : Definition {
+        vector<string> args;
+        vector<string> initializer_list;
+        bool is_deleted;
+    };
+
 
 public:
 
@@ -79,6 +93,17 @@ public:
         }
 
         string head = string_method.substr(0, string_method.find("(") );
+        string post_modifiers = string_method.substr(string_method.find(")") + 1);
+        if (post_modifiers != ";") {
+            clear_string(post_modifiers);
+            if (post_modifiers.find(";") != string::npos) {
+                post_modifiers = post_modifiers.substr(0, post_modifiers.find(";"));
+            }
+            if (post_modifiers != "") {
+                method.post_modifiers = read_modifiers(post_modifiers);
+            }
+        }
+        DEBUG("POST MODIFIERS: " << post_modifiers)
         while (head.find_last_of(" ") == head.length() - 1) {
             head = head.substr(0, head.length() - 1);
         }
@@ -123,7 +148,9 @@ private:
         vector<string> tokens = split(string_modifiers, " ");
         for (string& token : tokens) {
             clear_string(token);
-            if (token == "static") {
+            if (token == "const") {
+                modifiers.push_back(Modifier::CONST);
+            } else if (token == "static") {
                 modifiers.push_back(Modifier::STATIC);
             } else if (token == "virtual") {
                 modifiers.push_back(Modifier::VIRTUAL);
@@ -143,8 +170,6 @@ private:
                 modifiers.push_back(Modifier::CONSTEXPR);
             }
         }
-
-
         return modifiers;
     }
 
@@ -268,6 +293,9 @@ private:
 
     friend ostream& operator<<(ostream& os, const Modifier& modifier) {
         switch (modifier) {
+            case Modifier::CONST:
+                os << "const";
+                break;
             case Modifier::STATIC:
                 os << "static";
                 break;
