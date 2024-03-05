@@ -22,14 +22,20 @@ std::string remove_leading_trailing_spaces(const std::string& string) {
 
 
 // create a function that eliminates a string from inside the string, for example
-// eliminate_strings("return \"Ciao \\\"amore\\\\"\";") -> "return ;"
-std::string eliminate_strings(const std::string& str) {
-    DEBUG("eliminate_strings(" << str << ")");
+// eliminate_substrings_in_strings("return \"Ciao \\\"amore\\\\"\";") -> "return ;"
+std::string eliminate_substrings_in_strings(const std::string& str) {
     std::string result;
     bool in_string = false;
     for (size_t i = 0; i < str.size(); i++) {
         if (str[i] == '"') {
-            in_string = !in_string;
+            if (i==0) {
+                in_string = !in_string;
+                continue;
+
+            } else if (str[i-1]!= '\\') {
+                in_string = !in_string;
+                continue;
+            }
         }
         if (!in_string) {
             result += str[i];
@@ -38,9 +44,25 @@ std::string eliminate_strings(const std::string& str) {
     return result;
 }
 
+std::string eliminate_parentheses_in_substrings_and_chars(const std::string& string) {
+    std::string tmp = eliminate_substrings_in_strings(string);
+    std::string result;
+    for (size_t i = 0; i < tmp.size(); i++)
+    {
+        if (tmp[i]=='\'') {
+            if (tmp[i+1] == '('  || tmp[i+1] == ')') {
+                i+= 2;
+                continue;
+            }
+        }
+        result += tmp[i];
+    }
+    return result;    
+}
+
 size_t parentheses_balance(const std::string& string) {
     size_t balance = 0;
-    std::string str = eliminate_strings(string);
+    std::string str = eliminate_substrings_in_strings(string);
     for (const char& c : str) {
         if (c == '(') {
             balance++;

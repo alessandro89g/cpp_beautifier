@@ -77,24 +77,37 @@ TEST(ParenthesesBalanceTest, NoParentheses) {
 
 TEST(EliminateStringsTest, NoStrings) {
     std::string str = "Hello World";
-    std::string result = eliminate_strings(str);
+    std::string result = eliminate_substrings_in_strings(str);
     ASSERT_EQ(result, "Hello World");
 }
 
 TEST(EliminateStringsTest, SingleString) {
     std::string str = "return \"Ciao \\\"amore\\\"\";";
-    std::string result = eliminate_strings(str);
-    ASSERT_EQ(result, "return ");
+    std::string result = eliminate_substrings_in_strings(str);
+    ASSERT_EQ(result, "return ;");
 }
 
 TEST(EliminateStringsTest, MultipleStrings) {
     std::string str = "\"Hello\" World \"This\" is \"a\" Test";
-    std::string result = eliminate_strings(str);
-    ASSERT_EQ(result, " World  is  Test");
+    std::string result = eliminate_substrings_in_strings(str);
+    ASSERT_EQ(result, " World  is  Test"); 
 }
 
 TEST(EliminateStringsTest, EmptyString) {
     std::string str = "";
-    std::string result = eliminate_strings(str);
+    std::string result = eliminate_substrings_in_strings(str);
     ASSERT_EQ(result, "");
+}
+
+TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInChar) {
+    std::string str = "    char a = '(';";
+    std::string result = eliminate_parentheses_in_substrings_and_chars(str);
+    ASSERT_EQ(result, "    char a = ;");
+
+}
+
+TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInCharAndString) {
+    std::string str = "    return '('~+~\"Ciao\"~+~')';";
+    std::string result = eliminate_parentheses_in_substrings_and_chars(str);
+    ASSERT_EQ(result, "    return ~+~~+~;");
 }
