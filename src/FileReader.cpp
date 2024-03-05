@@ -1,18 +1,7 @@
 #include "../include/FileReader.hpp"
+#include "../include/utilities.hpp"
 
 using namespace std;
-
-size_t parenthesis_balance(const string& line) {
-    size_t balance = 0;
-    for (const char& c : line) {
-        if (c == '(') {
-            balance++;
-        } else if (c == ')') {
-            balance--;
-        }
-    }
-    return balance;
-}
 
 FileReader::FileReader(const string& file_string) {
     open_and_read_file(file_string);
@@ -43,20 +32,16 @@ void FileReader::read_file(const string& file_string) {
     stringstream text(file_string);
     string line;
     while (getline(text, line)) {
-        if (line.find('(') != string::npos) {
-            uint parenthesis = 0;
-            parenthesis += parenthesis_balance(line);
-            if (parenthesis)
-            while (parenthesis) {
-                string new_line;
-                getline(text, new_line);
-                while (new_line[0] == ' ' || new_line[0] == '\t') {
-                    new_line.erase(new_line.begin());
-                }
-                line += " " + new_line;
-                parenthesis += parenthesis_balance(new_line);
+        uint parenthesis = parentheses_balance(line);
+        while (parenthesis) {
+            string new_line;
+            getline(text, new_line);
+            while (new_line[0] == ' ' || new_line[0] == '\t') {
+                new_line.erase(new_line.begin());
             }
-        }      
+            line += " " + new_line;
+            parenthesis += parentheses_balance(new_line);
+        }  
         text << line;
         text << '\n';
     }

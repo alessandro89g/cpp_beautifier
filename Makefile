@@ -41,6 +41,14 @@ $(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -o $@ $< src/ClassScraper.o src/Breaker.o src/FileReader.o
 
+tests/test_utilities: tests/test_utilities.cpp
+	@echo "Creating executable.."
+	${CC} ${CFLAGS} -o $@ $< ${GOOGLE_TEST}
+
+run_tests: tests/test_utilities
+	@echo "Running tests.."
+	./tests/test_utilities
+
 clean:
 	@echo "Cleaning up..."
 	rm -rvf src/*.o ${PROJECT_NAME} ${PROJECT_NAME}.o
