@@ -1,4 +1,4 @@
-#include "ClassScraper.h"
+#include "include/ClassScraper.h"
 
 #define DEBUG(...)  cout << __VA_ARGS__ << endl;
 
