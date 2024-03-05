@@ -74,3 +74,27 @@ TEST(ParenthesesBalanceTest, NoParentheses) {
     size_t balance = parentheses_balance(str);
     ASSERT_EQ(balance, 0);
 }
+
+TEST(EliminateStringsTest, NoStrings) {
+    std::string str = "Hello World";
+    std::string result = eliminate_strings(str);
+    ASSERT_EQ(result, "Hello World");
+}
+
+TEST(EliminateStringsTest, SingleString) {
+    std::string str = "return \"Ciao \\\"amore\\\"\";";
+    std::string result = eliminate_strings(str);
+    ASSERT_EQ(result, "return ");
+}
+
+TEST(EliminateStringsTest, MultipleStrings) {
+    std::string str = "\"Hello\" World \"This\" is \"a\" Test";
+    std::string result = eliminate_strings(str);
+    ASSERT_EQ(result, " World  is  Test");
+}
+
+TEST(EliminateStringsTest, EmptyString) {
+    std::string str = "";
+    std::string result = eliminate_strings(str);
+    ASSERT_EQ(result, "");
+}

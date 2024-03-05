@@ -5,6 +5,10 @@
 #include <vector>
 #include <iostream>
 
+#ifndef DEBUG
+#define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
+#endif // DEBUG
+
 std::string remove_leading_trailing_spaces(const std::string& string) {
     std::string str = string;
     while (str[0] == ' ' || str[0] == '\t') {
@@ -16,8 +20,27 @@ std::string remove_leading_trailing_spaces(const std::string& string) {
     return str;
 }
 
-size_t parentheses_balance(const std::string& str) {
+
+// create a function that eliminates a string from inside the string, for example
+// eliminate_strings("return \"Ciao \\\"amore\\\\"\";") -> "return ;"
+std::string eliminate_strings(const std::string& str) {
+    DEBUG("eliminate_strings(" << str << ")");
+    std::string result;
+    bool in_string = false;
+    for (size_t i = 0; i < str.size(); i++) {
+        if (str[i] == '"') {
+            in_string = !in_string;
+        }
+        if (!in_string) {
+            result += str[i];
+        }
+    }
+    return result;
+}
+
+size_t parentheses_balance(const std::string& string) {
     size_t balance = 0;
+    std::string str = eliminate_strings(string);
     for (const char& c : str) {
         if (c == '(') {
             balance++;
