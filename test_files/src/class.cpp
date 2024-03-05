@@ -1,4 +1,4 @@
-#include "../headers/class.hpp"
+#include "../include/class.hpp"
 
 #define DEBUG(x) std::cout << x << std::endl;
 

@@ -34,7 +34,7 @@ main.o: main.cpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-$(PROJECT_NAME): main.o
+$(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o
 	@make src/Breaker.o
 	@make src/FileReader.o
 	@make src/ClassScraper.o

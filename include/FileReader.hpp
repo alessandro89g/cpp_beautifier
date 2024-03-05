@@ -17,24 +17,26 @@ class FileReader {
     #endif // DEBUG
 public:
     FileReader() = delete;
-    FileReader(std::ifstream& file);
     FileReader(const std::string& file_string);
     FileReader(const FileReader& file_reader) = delete;
     FileReader(FileReader&& file_reader) = delete;
 
-    std::string get_file_content();
+    std::string get_file_content() const;
+    std::vector<std::string> get_blocks() const;
 
-protected:
+private:
 
-    void read_file(std::ifstream& file);
+    void break_into_blocks();
+
+    void open_and_read_file(const std::string& file_path);
 
     void read_file(const std::string& file_string);
 
     void export_file(const std::string& file_path);
 
-protected:
+private:
     std::string file_content;
-
+    std::vector<std::string> blocks;
 };
 
 #endif // FILE_READER_H

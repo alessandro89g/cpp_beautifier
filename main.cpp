@@ -10,10 +10,7 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
     DEBUG("STARTED");
-    ifstream file(argv[1]);
-    ClassScraper file_reader(file);
-    
-    string text = file_reader.get_file_content();
+    ClassScraper file_reader(argv[1], argv[2]);
     
     size_t pos = 0;
     for (const string& method : file_reader.get_methods()) {

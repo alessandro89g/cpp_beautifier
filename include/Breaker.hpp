@@ -72,6 +72,14 @@ public:
         bool is_deleted;
     };
 
+    struct Destructor : Definition {
+        bool is_virtual;
+        bool is_deleted;
+    };
+
+    struct Member : Definition {
+        std::string type;
+    };
 
 public:
 

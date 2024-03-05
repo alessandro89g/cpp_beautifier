@@ -2,24 +2,38 @@
 
 using namespace std;
 
-FileReader::FileReader(ifstream& file) {
-    read_file(file);
-}
-FileReader::FileReader(const string& file_string) {
-    read_file(file_string);
+size_t parenthesis_balance(const string& line) {
+    size_t balance = 0;
+    for (const char& c : line) {
+        if (c == '(') {
+            balance++;
+        } else if (c == ')') {
+            balance--;
+        }
+    }
+    return balance;
 }
 
-string FileReader::get_file_content() {
+FileReader::FileReader(const string& file_string) {
+    open_and_read_file(file_string);
+}
+
+string FileReader::get_file_content() const {
     return file_content;
 }
 
-void FileReader::read_file(ifstream& file) {
+vector<string> FileReader::get_blocks() const {
+    return blocks;
+}
+
+void FileReader::open_and_read_file(const string& file_path) {
     string line;
+    ifstream file(file_path);
     if (!file.is_open()) {
         throw std::runtime_error("File not found");
     }
     while (getline(file, line)) {
-        file_content += line;
+        file_content += line + '\n';
     }
     read_file(file_content);
 }
@@ -31,13 +45,7 @@ void FileReader::read_file(const string& file_string) {
     while (getline(text, line)) {
         if (line.find('(') != string::npos) {
             uint parenthesis = 0;
-            for (const char& c : line) {
-                if (c == '(') {
-                    parenthesis++;
-                } else if (c == ')') {
-                    parenthesis--;
-                }
-            }
+            parenthesis += parenthesis_balance(line);
             if (parenthesis)
             while (parenthesis) {
                 string new_line;
@@ -46,11 +54,7 @@ void FileReader::read_file(const string& file_string) {
                     new_line.erase(new_line.begin());
                 }
                 line += " " + new_line;
-                if (new_line.find('(') != string::npos) {
-                    parenthesis++;
-                } else if (new_line.find(')') != string::npos) {
-                    parenthesis--;
-                }
+                parenthesis += parenthesis_balance(new_line);
             }
         }      
         text << line;
@@ -58,6 +62,7 @@ void FileReader::read_file(const string& file_string) {
     }
     file_content = text.str();
     file_content.erase(file_content.end() - 1);
+    DEBUG(file_content)
 }
 
 void FileReader::export_file(const string& file_path) {
@@ -66,4 +71,25 @@ void FileReader::export_file(const string& file_path) {
         throw std::runtime_error("File not found: " + file_path);
     }
     file << file_content;
+}
+
+void FileReader::break_into_blocks() {
+    string block;
+    string line;
+    stringstream text(file_content);
+    size_t brakets = 0;
+    uint n_lines = 0;
+    while (getline(text, line, '\n')) {
+        if (line.find('{') != string::npos) {
+            brakets++;
+        }
+        if (line.find('}') != string::npos) {
+            brakets--;
+        }
+        block += line + '\n';
+        if (!brakets) {
+            blocks.push_back(block);
+            block.clear();
+        }
+    }
 }
