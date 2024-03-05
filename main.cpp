@@ -4,6 +4,8 @@
 #define DEBUG(...)  cout << __VA_ARGS__ << endl;
 #endif // DEBUG
 
+using namespace std;
+
 
 
 int main(int argc, char const *argv[]) {

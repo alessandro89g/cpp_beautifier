@@ -3,5 +3,5 @@ cpp_beautifier
 .vscode
 build
 .vscode/*
-.o
+*.o
 ClassScraper
