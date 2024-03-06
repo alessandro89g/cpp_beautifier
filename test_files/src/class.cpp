@@ -3,7 +3,8 @@
 #define DEBUG(x) std::cout << x << std::endl;
 
 Beautifier::Beautifier(const std::string& header, const std::string& source)
-    : header(header), source(source) {
+    : header(header), source(source) 
+{
 }
 
 std::string Beautifier::getHeader() const {

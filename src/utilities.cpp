@@ -1,4 +1,5 @@
 #include "../include/utilities.hpp"
+#include <regex>
 
 std::string remove_trailing_new_lines(const std::string& string) {
     std::string str = string;
@@ -141,9 +142,26 @@ std::string string_join(const std::vector<std::string>& strings, const std::stri
 
 }
 
-
 std::vector<std::string> split_in_blocks(const std::string& str) {
     std::string text = remove_leading_trailing_spaces(str);
+    // Removing curly braces at beginning of lines
+    while (regex_search(text, std::regex("\\n\\{"))) {
+        text = regex_replace(text, std::regex("\\n\\{"), " {");
+    }
+    // Writing the class declaration in one line
+    while (regex_search(text, std::regex("(\\h*)\\bclass\\b(.+)\\n(.+)\\{"))) {
+        text = regex_replace(text, std::regex("(\\h*)\\bclass\\b(.+)\\n(.+)\\{"), "$1class$2 $3 {");
+    }
+
+    // Writing the constructor initialization list in one line
+    while (regex_search(text, std::regex("(\\s*)\\n(\\s*)\\:((.+?)\\{)"))) {
+        text = regex_replace(text, std::regex("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)"), " : $3");
+    }
+    DEBUG("===================================================")
+    DEBUG(text);
+    DEBUG("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)")
+    DEBUG("===================================================")
+
     std::string block;
     std::vector<std::string> blocks;
     std::vector<std::string> lines = string_split(text, "\n");
@@ -165,7 +183,7 @@ std::vector<std::string> split_in_blocks(const std::string& str) {
                 p_balance += parentheses_balance(lines[i], '{');
             }
         }
-        if (line_count > 1) {
+        if (line_count > 0) {
             blocks.push_back(block);
         }
     }
