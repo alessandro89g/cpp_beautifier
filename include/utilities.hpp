@@ -9,7 +9,15 @@
 #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
 #endif // DEBUG
 
-std::string remove_trailling_spaces(const std::string& string) {
+std::string remove_trailing_new_lines(const std::string& string) {
+    std::string str = string;
+    while (str[str.size() - 1] == '\n') {
+        str.erase(str.end() - 1);
+    }
+    return str;
+}
+
+std::string remove_trailing_spaces(const std::string& string) {
     std::string str = string;
     while (str[str.size() - 1] == ' ' || str[str.size() - 1] == '\t') {
         str.erase(str.end() - 1);
@@ -27,7 +35,7 @@ std::string remove_leading_spaces(const std::string& string) {
 
 std::string remove_leading_trailing_spaces(const std::string& string) {
     std::string str = remove_leading_spaces(string);
-    str = remove_trailling_spaces(str);
+    str = remove_trailing_spaces(str);
     return str;
 }
 

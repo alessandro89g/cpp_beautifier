@@ -99,14 +99,14 @@ TEST(EliminateStringsTest, EmptyString) {
     ASSERT_EQ(result, "");
 }
 
-TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInChar) {
+TEST(EliminateParenthesesInSubstringsAndChars, parenthesesInChar) {
     std::string str = "    char a = '(';";
     std::string result = eliminate_parentheses_in_substrings_and_chars(str);
     ASSERT_EQ(result, "    char a = ;");
 
 }
 
-TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInCharAndString) {
+TEST(EliminateParenthesesInSubstringsAndChars, parenthesesInCharAndString) {
     std::string str = "    return '('~+~\"Ciao\"~+~')';";
     std::string result = eliminate_parentheses_in_substrings_and_chars(str);
     ASSERT_EQ(result, "    return ~+~~+~;");

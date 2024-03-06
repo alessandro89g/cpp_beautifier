@@ -13,8 +13,10 @@ int main(int argc, char const *argv[]) {
     ClassScraper file_reader(argv[1], argv[2]);
 
 
-    DEBUG("File content: " << file_reader.get_header_content());
-    DEBUG("File content: " << file_reader.get_source_content());
+    DEBUG("File content: \n\n" << file_reader.get_header_content());
+    DEBUG("===================================")
+    DEBUG("File content: \n\n" << file_reader.get_source_content());
+    DEBUG("===================================")
     return 0;
     size_t pos = 0;
     for (const string& method : file_reader.get_methods()) {

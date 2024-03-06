@@ -24,32 +24,43 @@ void FileReader::open_and_read_file(const string& file_path) {
     while (getline(file, line)) {
         file_content += line + '\n';
     }
+    file.close();
+    file_content = remove_trailing_new_lines(file_content);
+    DEBUG("File content: " << file_content)
     read_file(file_content);
+    DEBUG("File content: " << file_content)
+    abort();
 }
 
 
 void FileReader::read_file(const string& file_string) {
     // It has problemss with reading files with regex expressions because it cannot 
-    // balance the parenthesis as they do not need to be balanced in the file
+    // balance the parentheses as they do not need to be balanced in the file
     // Solution: ignore the parentheses in the strings
     stringstream text(file_string);
-    string line;
+    string line, new_line;
     while (getline(text, line)) {
-        uint parenthesis = parentheses_balance(line);
-        line = remove_trailling_spaces(line);
-        while (parenthesis) {
-            string new_line;
-            getline(text, new_line);
-            new_line = remove_leading_trailing_spaces(new_line);
-            line += " " + new_line;
-            parenthesis += parentheses_balance(new_line);
-        }  
+        line = remove_trailing_spaces(line);
+        uint parentheses = parentheses_balance(line);
+        if (parentheses)
+            while (getline(text, new_line)) {
+                new_line = remove_leading_trailing_spaces(new_line);
+                line += " " + new_line;
+                parentheses += parentheses_balance(new_line);
+                if (parentheses == 0) {
+                    break;
+                }
+                
+            }  
+        if (parentheses != 0) {
+            throw std::runtime_error("Parentheses not balanced in file");
+        }
         text << line;
-        text << '\n';
+        text << endl;
+        line.clear();
     }
     file_content = text.str();
     file_content.erase(file_content.end() - 1);
-    DEBUG(file_content)
 }
 
 void FileReader::export_file(const string& file_path) {
