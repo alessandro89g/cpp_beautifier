@@ -36,12 +36,11 @@ void FileReader::read_file(const string& file_string) {
     string line;
     while (getline(text, line)) {
         uint parenthesis = parentheses_balance(line);
+        line = remove_trailling_spaces(line);
         while (parenthesis) {
             string new_line;
             getline(text, new_line);
-            while (new_line[0] == ' ' || new_line[0] == '\t') {
-                new_line.erase(new_line.begin());
-            }
+            new_line = remove_leading_trailing_spaces(new_line);
             line += " " + new_line;
             parenthesis += parentheses_balance(new_line);
         }  

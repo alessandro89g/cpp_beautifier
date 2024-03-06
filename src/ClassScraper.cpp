@@ -17,6 +17,14 @@ vector<string> ClassScraper::get_classes() {
     return classes;
 }
 
+string ClassScraper::get_header_content() const {
+    return headed_reader->get_file_content();
+}
+
+string ClassScraper::get_source_content() const {
+    return source_reader->get_file_content();
+}
+
 void ClassScraper::scrape() {
     find_classes();
     find_methods();

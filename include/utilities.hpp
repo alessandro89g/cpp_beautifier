@@ -9,14 +9,25 @@
 #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
 #endif // DEBUG
 
-std::string remove_leading_trailing_spaces(const std::string& string) {
+std::string remove_trailling_spaces(const std::string& string) {
+    std::string str = string;
+    while (str[str.size() - 1] == ' ' || str[str.size() - 1] == '\t') {
+        str.erase(str.end() - 1);
+    }
+    return str;
+}
+
+std::string remove_leading_spaces(const std::string& string) {
     std::string str = string;
     while (str[0] == ' ' || str[0] == '\t') {
         str.erase(str.begin());
     }
-    while (str[str.size() - 1] == ' ' || str[str.size() - 1] == '\t') {
-        str.erase(str.end() - 1);
-    }
+    return str;
+}
+
+std::string remove_leading_trailing_spaces(const std::string& string) {
+    std::string str = remove_leading_spaces(string);
+    str = remove_trailling_spaces(str);
     return str;
 }
 
@@ -61,8 +72,8 @@ std::string eliminate_parentheses_in_substrings_and_chars(const std::string& str
 }
 
 size_t parentheses_balance(const std::string& string) {
+    std::string str = eliminate_parentheses_in_substrings_and_chars(string);
     size_t balance = 0;
-    std::string str = eliminate_substrings_in_strings(string);
     for (const char& c : str) {
         if (c == '(') {
             balance++;

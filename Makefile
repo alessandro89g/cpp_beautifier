@@ -51,4 +51,4 @@ run_tests: tests/test_utilities
 
 clean:
 	@echo "Cleaning up..."
-	rm -rvf src/*.o ${PROJECT_NAME} ${PROJECT_NAME}.o
+	rm -rvf src/*.o ${PROJECT_NAME} ${PROJECT_NAME}.o tests/test_utilities

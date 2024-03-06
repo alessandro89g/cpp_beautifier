@@ -26,9 +26,9 @@ public:
 
 private:
 
-    void break_into_blocks();
-
     void open_and_read_file(const std::string& file_path);
+
+    void break_into_blocks();
 
     void read_file(const std::string& file_string);
 

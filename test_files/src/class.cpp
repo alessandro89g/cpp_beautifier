@@ -73,7 +73,8 @@ bool Beautifier::is_a_destructor(const std::string& line, std::string class_name
     return std::regex_match(line, std::regex(destructor_scheleton));
 }
 
-bool Beautifier::is_a_method(const std::string& line, string class_name) const {
+bool Beautifier::is_a_method(const std::string& line,
+        std::string class_name) const {
     if (class_name == "")
         class_name = _class.name;
     const std::string keywords = "\\s*(?:(?:virtual|inline|explicit|constexpr|static|friend|override)\\s+)?";
@@ -87,7 +88,7 @@ bool Beautifier::is_a_method(const std::string& line, string class_name) const {
     return std::regex_match(line, std::regex(method_scheleton));
 }
 
-bool Beautifier::is_a_member(const std::string& line, string class_name) const {
+bool Beautifier::is_a_member(const std::string& line, std::string class_name) const {
     if (class_name == "")
         class_name = _class.name;
     return std::regex_match(line, std::regex(".*;"));

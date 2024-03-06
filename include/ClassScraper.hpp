@@ -14,6 +14,9 @@ public:
 
     std::vector<std::string> get_classes();
 
+    std::string get_header_content() const;
+    std::string get_source_content() const;
+
     struct Class : Definition {
         std::vector<un_ptr(Include)> includes;
         std::vector<un_ptr(Member)> members;
