@@ -45,9 +45,9 @@ $(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o src/ut
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -o $@ $< src/ClassScraper.o src/Breaker.o src/FileReader.o src/utilities.o
 
-tests/test_utilities: tests/test_utilities.cpp include/utilities.hpp
+tests/test_utilities: tests/test_utilities.cpp src/utilities.o
 	@echo "Creating executable.."
-	${CC} ${CFLAGS} -o $@ $< ${GOOGLE_TEST}
+	${CC} ${CFLAGS} -o $@ $< src/utilities.o ${GOOGLE_TEST}
 
 run_tests: tests/test_utilities
 	@echo "Running tests.."

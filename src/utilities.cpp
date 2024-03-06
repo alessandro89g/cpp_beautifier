@@ -86,13 +86,29 @@ std::string eliminate_parentheses_in_substrings_and_chars(const std::string& str
     return result;    
 }
 
-size_t parentheses_balance(const std::string& string) {
+size_t parentheses_balance(const std::string& string, char open_parenthesis_type) {
     std::string str = eliminate_parentheses_in_substrings_and_chars(string);
     size_t balance = 0;
+    char open = open_parenthesis_type;
+    char close;
+    switch (open_parenthesis_type)
+    {
+    case '(':
+        close = ')';
+        break;
+    case '[':
+        close = ']';
+        break;  
+    case '{':
+        close = '}';
+        break;      
+    default:
+        throw std::invalid_argument("Invalid open parenthesis type");
+    }
     for (const char& c : str) {
-        if (c == '(') {
+        if (c == open) {
             balance++;
-        } else if (c == ')') {
+        } else if (c == close) {
             balance--;
         }
     }

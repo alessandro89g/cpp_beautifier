@@ -23,7 +23,7 @@ std::string eliminate_substrings_in_strings(const std::string& str);
 
 std::string eliminate_parentheses_in_substrings_and_chars(const std::string& string, char open_parenthesis_type = '(');
 
-size_t parentheses_balance(const std::string& string);
+size_t parentheses_balance(const std::string& string, char open_parenthesis_type = '('); 
 
 std::vector<std::string> split_string(const std::string& str, const std::string& delimiter = "\n");
 

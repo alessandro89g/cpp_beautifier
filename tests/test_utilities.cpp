@@ -75,6 +75,66 @@ TEST(ParenthesesBalanceTest, NoParentheses) {
     ASSERT_EQ(balance, 0);
 }
 
+TEST(ParenthesesBalanceTest, EmptyStringSquareBrackets) {
+    std::string str = "";
+    size_t balance = parentheses_balance(str, '[');
+    ASSERT_EQ(balance, 0);
+}
+
+TEST(ParenthesesBalanceTest, BalancedStringSquareBrackets) {
+    std::string str = "[a + b] * [c - d]";
+    size_t balance = parentheses_balance(str, '[');
+    ASSERT_EQ(balance, 0);
+}
+
+TEST(ParenthesesBalanceTest, UnbalancedStringSquareBrackets) {
+    std::string str = "[a + b] * [c - d";
+    size_t balance = parentheses_balance(str, '[');
+    ASSERT_EQ(balance, 1);
+}
+
+TEST(ParenthesesBalanceTest, UnbalancedString2SquareBrackets) {
+    std::string str = "[[[a + b * c - d]";
+    size_t balance = parentheses_balance(str, '[');
+    ASSERT_EQ(balance, 2);
+}
+
+TEST(ParenthesesBalanceTest, NoParenthesesSquareBrackets) {
+    std::string str = "a + b * c - d";
+    size_t balance = parentheses_balance(str, '[');
+    ASSERT_EQ(balance, 0);
+}
+
+TEST(ParenthesesBalanceTest, EmptyStringCurlyBrackets) {
+    std::string str = "";
+    size_t balance = parentheses_balance(str, '{');
+    ASSERT_EQ(balance, 0);
+}
+
+TEST(ParenthesesBalanceTest, BalancedStringCurlyBrackets) {
+    std::string str = "{a + b} * {c - d}";
+    size_t balance = parentheses_balance(str, '{');
+    ASSERT_EQ(balance, 0);
+}
+
+TEST(ParenthesesBalanceTest, UnbalancedStringCurlyBrackets) {
+    std::string str = "{a + b} * {c - d";
+    size_t balance = parentheses_balance(str, '{');
+    ASSERT_EQ(balance, 1);
+}
+
+TEST(ParenthesesBalanceTest, UnbalancedString2CurlyBrackets) {
+    std::string str = "{{{a + b * c - d}";
+    size_t balance = parentheses_balance(str, '{');
+    ASSERT_EQ(balance, 2);
+}
+
+TEST(ParenthesesBalanceTest, NoParenthesesCurlyBrackets) {
+    std::string str = "a + b * c - d";
+    size_t balance = parentheses_balance(str, '{');
+    ASSERT_EQ(balance, 0);
+}
+
 TEST(EliminateStringsTest, NoStrings) {
     std::string str = "Hello World";
     std::string result = eliminate_substrings_in_strings(str);
@@ -99,14 +159,14 @@ TEST(EliminateStringsTest, EmptyString) {
     ASSERT_EQ(result, "");
 }
 
-TEST(EliminateParenthesesInSubstringsAndChars, parenthesesInChar) {
+TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInChar) {
     std::string str = "    char a = '(';";
     std::string result = eliminate_parentheses_in_substrings_and_chars(str);
     ASSERT_EQ(result, "    char a = ;");
 
 }
 
-TEST(EliminateParenthesesInSubstringsAndChars, parenthesesInCharAndString) {
+TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInCharAndString) {
     std::string str = "    return '('~+~\"Ciao\"~+~')';";
     std::string result = eliminate_parentheses_in_substrings_and_chars(str);
     ASSERT_EQ(result, "    return ~+~~+~;");
