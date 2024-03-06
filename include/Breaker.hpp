@@ -10,7 +10,7 @@
 
 class Breaker {
     #define un_ptr(x) std::unique_ptr<x>
-    #ifndef DEBUG
+        #ifndef DEBUG
     #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
     #endif // DEBUG
 public:
@@ -92,8 +92,6 @@ private:
     std::vector<Modifier> read_modifiers(const std::string& string_modifiers);
 
     void clear_string(std::string& str);
-
-    std::vector<std::string> split(const std::string& str, const std::string& delimiter);
 
     uint lines_in_block(const std::string& block);
 

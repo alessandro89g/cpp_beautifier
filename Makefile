@@ -18,11 +18,11 @@ run: $(PROJECT_NAME)
 	@echo "Running binary.."
 	./${PROJECT_NAME} ${ARGS}
 
-src/Breaker.o : src/Breaker.cpp include/Breaker.hpp
+src/Breaker.o : src/Breaker.cpp include/Breaker.hpp src/utilities.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/FileReader.o: src/FileReader.cpp include/FileReader.hpp
+src/FileReader.o: src/FileReader.cpp include/FileReader.hpp src/utilities.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
@@ -30,16 +30,20 @@ src/ClassScraper.o:	src/ClassScraper.cpp include/ClassScraper.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
+src/utilities.o: src/utilities.cpp include/utilities.hpp
+	@echo "Creating object.."
+	${CC} ${CFLAGS} -c $< -o $@
+
 main.o: main.cpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-$(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o
+$(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o src/utilities.o
 	@make src/Breaker.o
 	@make src/FileReader.o
 	@make src/ClassScraper.o
 	@echo "Creating object.."
-	${CC} ${CFLAGS} -o $@ $< src/ClassScraper.o src/Breaker.o src/FileReader.o
+	${CC} ${CFLAGS} -o $@ $< src/ClassScraper.o src/Breaker.o src/FileReader.o src/utilities.o
 
 tests/test_utilities: tests/test_utilities.cpp include/utilities.hpp
 	@echo "Creating executable.."

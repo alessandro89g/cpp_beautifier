@@ -1,4 +1,5 @@
 #include "../include/Breaker.hpp"
+#include "../include/utilities.hpp"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
 
 vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers) {
     vector<Modifier> modifiers;
-    vector<string> tokens = split(string_modifiers, " ");
+    vector<string> tokens = split_string(string_modifiers, " ");
     for (string& token : tokens) {
         clear_string(token);
         if (token == "const") {
@@ -91,18 +92,6 @@ void Breaker::clear_string(string& str) {
     }
 }
 
-vector<string> Breaker::split(const string& str, const string& delimiter) {
-    vector<string> tokens;
-    size_t pos = 0;
-    size_t last_pos = 0;
-    while ((pos = str.find(delimiter, last_pos)) != string::npos) {
-        tokens.push_back(str.substr(last_pos, pos - last_pos));
-        last_pos = pos + 1;
-    }
-    tokens.push_back(str.substr(last_pos));
-    return tokens;
-}
-
 uint Breaker::lines_in_block(const string& block) {
     uint lines = 0;
     for (const char& c : block) {
@@ -116,7 +105,7 @@ uint Breaker::lines_in_block(const string& block) {
 
 vector<string> Breaker::read_args(string string_args) {
     string_args = string_args.substr(1, string_args.find(")")-1);
-    vector<string> args = split(string_args, ",");
+    vector<string> args = split_string(string_args, ",");
     for (string& arg : args) {
         clear_string(arg);
     }

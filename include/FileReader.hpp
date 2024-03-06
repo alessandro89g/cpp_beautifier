@@ -13,7 +13,7 @@
 
 class FileReader {
     #ifndef DEBUG
-    #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
+        #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
     #endif // DEBUG
 public:
     FileReader() = delete;
