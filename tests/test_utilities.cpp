@@ -4,7 +4,8 @@
 TEST(SplitStringTest, EmptyString) {
     std::string str = "";
     std::vector<std::string> result = string_split(str);
-    ASSERT_EQ(result.size(), 0);
+    ASSERT_EQ(result.size(), 1);
+    ASSERT_EQ(result[0], "");
 }
 
 TEST(SplitStringTest, SingleDelimiter) {

@@ -23,6 +23,21 @@ int main(int argc, char const *argv[]) {
         DEBUG("=====================================")
         DEBUG("Block: \n" << block)
     }
+    DEBUG("Number of blocks: " << blocks.size())
+    DEBUG("=====================================")
+
+    string source = file_reader.get_source_content();
+    DEBUG("Source: " << source)
+    DEBUG("Lines: " <<  string_split(source).size())
+    DEBUG("=====================================")
+
+    blocks = split_in_blocks(source);
+    for (const string& block : blocks) {
+        DEBUG("=====================================")
+        DEBUG("Block: \n" << block)
+    }
+    DEBUG("Number of blocks: " << blocks.size())
+    DEBUG("=====================================")
 
     abort();
 

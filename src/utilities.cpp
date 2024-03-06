@@ -151,8 +151,7 @@ std::vector<std::string> split_in_blocks(const std::string& str) {
     size_t line_count;
     
     for (size_t i = 0; i < lines.size(); i++) {
-        block = remove_trailing_spaces(lines[i]);
-        if (block == "") {
+        if (lines[i] == "") {
             continue;
         }
         line_count = 0;
@@ -160,11 +159,10 @@ std::vector<std::string> split_in_blocks(const std::string& str) {
         if (p_balance != 0) {
             block = remove_trailing_spaces(lines[i]);
             while(p_balance != 0) {
+                i++;
                 block += '\n' + remove_trailing_spaces(lines[i]);
                 line_count++;
                 p_balance += parentheses_balance(lines[i], '{');
-                if (p_balance != 0)
-                    i++;
             }
         }
         if (line_count > 1) {
