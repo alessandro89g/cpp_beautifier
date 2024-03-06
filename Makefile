@@ -7,6 +7,11 @@
 PROJECT_NAME = ClassScraper
 ARGS = test_files/include/class.hpp test_files/src/class.cpp
 
+SRC_DIR = src
+INC_DIR = include
+TEST_DIR = tests
+BUILD_DIR = build
+
 CC = g++
 CFLAGS = -Wall -g -std=c++20
 
@@ -18,41 +23,41 @@ run: $(PROJECT_NAME)
 	@echo "Running binary.."
 	./${PROJECT_NAME} ${ARGS}
 
-src/Breaker.o : src/Breaker.cpp include/Breaker.hpp src/utilities.o
+$(BUILD_DIR)/Breaker.o : $(SRC_DIR)/Breaker.cpp $(INC_DIR)/Breaker.hpp $(BUILD_DIR)/utilities.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/FileReader.o: src/FileReader.cpp include/FileReader.hpp src/utilities.o
+$(BUILD_DIR)/FileReader.o: $(SRC_DIR)/FileReader.cpp $(INC_DIR)/FileReader.hpp $(BUILD_DIR)/utilities.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/ClassScraper.o:	src/ClassScraper.cpp include/ClassScraper.hpp
+$(BUILD_DIR)/ClassScraper.o:	$(SRC_DIR)/ClassScraper.cpp $(INC_DIR)/ClassScraper.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-src/utilities.o: src/utilities.cpp include/utilities.hpp
+$(BUILD_DIR)/utilities.o: $(SRC_DIR)/utilities.cpp $(INC_DIR)/utilities.hpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-main.o: main.cpp
+$(BUILD_DIR)/main.o: main.cpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-$(PROJECT_NAME): main.o src/Breaker.o src/FileReader.o src/ClassScraper.o src/utilities.o
-	@make src/Breaker.o
-	@make src/FileReader.o
-	@make src/ClassScraper.o
+$(PROJECT_NAME): main.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/utilities.o
+	@make $(BUILD_DIR)/Breaker.o
+	@make $(BUILD_DIR)/FileReader.o
+	@make $(BUILD_DIR)/ClassScraper.o
 	@echo "Creating object.."
-	${CC} ${CFLAGS} -o $@ $< src/ClassScraper.o src/Breaker.o src/FileReader.o src/utilities.o
+	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o
 
-tests/test_utilities: tests/test_utilities.cpp src/utilities.o
+$(BUILD_DIR)/test_utilities: $(TEST_DIR)/test_utilities.cpp $(BUILD_DIR)/utilities.o
 	@echo "Creating executable.."
-	${CC} ${CFLAGS} -o $@ $< src/utilities.o ${GOOGLE_TEST}
+	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
 
-run_tests: tests/test_utilities
+run_test: $(BUILD_DIR)/test_utilities
 	@echo "Running tests.."
-	./tests/test_utilities
+	./$(BUILD_DIR)/test_utilities
 
 clean:
 	@echo "Cleaning up..."
-	rm -rvf src/*.o ${PROJECT_NAME} ${PROJECT_NAME}.o tests/test_utilities
+	rm -rvf $(BUILD_DIR)/*.o ${PROJECT_NAME} $(BUILD_DIR)/test_utilities
