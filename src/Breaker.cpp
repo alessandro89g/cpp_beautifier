@@ -52,7 +52,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
 
 vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers) {
     vector<Modifier> modifiers;
-    vector<string> tokens = split_string(string_modifiers, " ");
+    vector<string> tokens = string_split(string_modifiers, " ");
     for (string& token : tokens) {
         clear_string(token);
         if (token == "const") {
@@ -105,7 +105,7 @@ uint Breaker::lines_in_block(const string& block) {
 
 vector<string> Breaker::read_args(string string_args) {
     string_args = string_args.substr(1, string_args.find(")")-1);
-    vector<string> args = split_string(string_args, ",");
+    vector<string> args = string_split(string_args, ",");
     for (string& arg : args) {
         clear_string(arg);
     }

@@ -32,7 +32,7 @@ void FileReader::open_and_read_file(const string& file_path) {
 
 void FileReader::read_file(const string& file_string) {
     string line;
-    vector<string> lines = split_string(file_string);
+    vector<string> lines = string_split(file_string);
     file_content.clear();
     for (size_t i = 0; i < lines.size(); i++) {
         line = remove_trailing_spaces(lines[i]);
@@ -48,10 +48,6 @@ void FileReader::read_file(const string& file_string) {
             if (parentheses == 0) {
                 break;
             }
-            
-        }  
-        if (parentheses != 0) {
-            throw std::runtime_error("Parentheses not balanced in file");
         }
         file_content += line + '\n';
     }

@@ -2,7 +2,7 @@
 
 #define DEBUG(x) std::cout << x << std::endl;
 
-std::vector<std::string> split_string(const std::string& str, char delimiter = ',') {
+std::vector<std::string> string_split(const std::string& str, char delimiter = ',') {
     std::vector<std::string> tokens;
     std::string token;
     std::istringstream token_stream(str);
@@ -110,7 +110,7 @@ bool Beautifier::extract_class(const std::string& line) {
         }
         std::string other = matches[2].str();
         DEBUG("Inheritance found: " + other)
-        std::vector<std::string> inheritance = split_string(other);
+        std::vector<std::string> inheritance = string_split(other);
         for (auto& i : inheritance) {
             clean_string(i, true);
             if (std::regex_match(i, matches, std::regex(string_inheritance_and_access))) {

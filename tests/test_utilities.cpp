@@ -3,13 +3,13 @@
 
 TEST(SplitStringTest, EmptyString) {
     std::string str = "";
-    std::vector<std::string> result = split_string(str);
+    std::vector<std::string> result = string_split(str);
     ASSERT_EQ(result.size(), 0);
 }
 
 TEST(SplitStringTest, SingleDelimiter) {
     std::string str = "Hello\nWorld";
-    std::vector<std::string> result = split_string(str);
+    std::vector<std::string> result = string_split(str);
     ASSERT_EQ(result.size(), 2);
     ASSERT_EQ(result[0], "Hello");
     ASSERT_EQ(result[1], "World");
@@ -17,7 +17,7 @@ TEST(SplitStringTest, SingleDelimiter) {
 
 TEST(SplitStringTest, MultipleDelimiters) {
     std::string str = "Hello\nWorld\nThis\nIs\nA\nTest";
-    std::vector<std::string> result = split_string(str, "\n");
+    std::vector<std::string> result = string_split(str, "\n");
     ASSERT_EQ(result.size(), 6);
     ASSERT_EQ(result[0], "Hello");
     ASSERT_EQ(result[1], "World");

@@ -115,21 +115,61 @@ size_t parentheses_balance(const std::string& string, char open_parenthesis_type
     return balance;
 }
 
-std::vector<std::string> split_string(const std::string& str, const std::string& delimiter) {
+std::vector<std::string> string_split(const std::string& str, const std::string& delimiter) {
     std::vector<std::string> result;
     size_t pos = 0;
     size_t last_pos = 0;
     while ((pos = str.find(delimiter, last_pos)) != std::string::npos) {
         std::string token = str.substr(last_pos, pos - last_pos);
-        if (remove_leading_trailing_spaces(token) != "") {
-            result.push_back(token);
-        }
+            result.push_back(remove_trailing_spaces(token));
         last_pos = pos + delimiter.size();
     }
     std::string token = str.substr(last_pos, str.size() - last_pos);
-    if (remove_leading_trailing_spaces(token) != "") {
-        result.push_back(token);
-    }
+        result.push_back(remove_trailing_spaces(token));
     return result;
 }
 
+std::string string_join(const std::vector<std::string>& strings, const std::string& delimiter) {
+    std::string result;
+    for (size_t i = 0; i < strings.size(); i++) {
+        result += strings[i];
+        if (i != strings.size() - 1) {
+            result += delimiter;
+        }
+    }
+    return result;
+
+}
+
+
+std::vector<std::string> split_in_blocks(const std::string& str) {
+    std::string text = remove_leading_trailing_spaces(str);
+    std::string block;
+    std::vector<std::string> blocks;
+    std::vector<std::string> lines = string_split(text, "\n");
+    size_t p_balance;
+    size_t line_count;
+    
+    for (size_t i = 0; i < lines.size(); i++) {
+        block = remove_trailing_spaces(lines[i]);
+        if (block == "") {
+            continue;
+        }
+        line_count = 0;
+        p_balance = parentheses_balance(lines[i], '{');
+        if (p_balance != 0) {
+            block = remove_trailing_spaces(lines[i]);
+            while(p_balance != 0) {
+                block += '\n' + remove_trailing_spaces(lines[i]);
+                line_count++;
+                p_balance += parentheses_balance(lines[i], '{');
+                if (p_balance != 0)
+                    i++;
+            }
+        }
+        if (line_count > 1) {
+            blocks.push_back(block);
+        }
+    }
+    return blocks;
+}
