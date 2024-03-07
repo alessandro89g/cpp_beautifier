@@ -43,10 +43,12 @@ $(BUILD_DIR)/main.o: main.cpp
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -c $< -o $@
 
-$(PROJECT_NAME): main.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/utilities.o
+$(PROJECT_NAME): $(BUILD_DIR)/main.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/utilities.o
 	@make $(BUILD_DIR)/Breaker.o
 	@make $(BUILD_DIR)/FileReader.o
 	@make $(BUILD_DIR)/ClassScraper.o
+	@make $(BUILD_DIR)/utilities.o
+	@make $(BUILD_DIR)/main.o
 	@echo "Creating object.."
 	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o
 

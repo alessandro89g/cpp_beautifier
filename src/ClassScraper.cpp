@@ -2,9 +2,7 @@
 
 using namespace std;
 
-ClassScraper::ClassScraper(const string& header, const string& source) 
-        : headed_reader(std::make_unique<FileReader>(header)),
-          source_reader(std::make_unique<FileReader>(source))
+ClassScraper::ClassScraper(const string& header, const string& source) : header(header), source(source) 
 {
     scrape();
 }
@@ -18,11 +16,11 @@ vector<string> ClassScraper::get_classes() {
 }
 
 string ClassScraper::get_header_content() const {
-    return headed_reader->get_file_content();
+    return header.header_reader->get_file_content();
 }
 
 string ClassScraper::get_source_content() const {
-    return source_reader->get_file_content();
+    return source.source_reader->get_file_content();
 }
 
 void ClassScraper::scrape() {
@@ -34,7 +32,7 @@ void ClassScraper::find_methods() {
     const string pattern_string = METHOD_RGX;
     smatch match;
     regex pattern(pattern_string);
-    string text = headed_reader->get_file_content();
+    string text = header.header_reader->get_file_content();
 
     while(regex_search(text,match,pattern)) {
         methods.push_back(match.str());
@@ -47,7 +45,7 @@ void ClassScraper::find_classes() {
     const string pattern_string = CLASS_NAME;
     smatch match;
     regex pattern(pattern_string);
-    string text = headed_reader->get_file_content();
+    string text = header.header_reader->get_file_content();
 
     while(regex_search(text,match,pattern)) {
         classes.push_back(match.str());

@@ -26,6 +26,35 @@ public:
         std::vector<un_ptr(Class)> sub_classes;
     };
 
+    struct Line {
+        std::string content;
+        uint line_number;
+    };
+
+    struct HeaderFile {
+        explicit HeaderFile(const std::string& name_with_path) 
+            : name_with_path(name_with_path), header_reader(std::make_unique<FileReader>(name_with_path)) {}
+        HeaderFile(HeaderFile&& header_file) :  name_with_path(header_file.name_with_path), header_reader(std::move(header_file.header_reader)),
+            includes(std::move(header_file.includes)), classes(std::move(header_file.classes)), extra_lines(std::move(header_file.extra_lines)) {}
+        std::string name_with_path;
+        std::unique_ptr<FileReader> header_reader;
+        std::vector<un_ptr(Include)> includes;
+        std::vector<un_ptr(Class)> classes;
+        std::vector<un_ptr(Line)> extra_lines; 
+    };
+
+    struct SourceFile {
+        explicit SourceFile(const std::string& name_with_path) 
+            : name_with_path(name_with_path), source_reader(std::make_unique<FileReader>(name_with_path)) {}
+        SourceFile(SourceFile&& source_file) :  name_with_path(source_file.name_with_path), source_reader(std::move(source_file.source_reader)),
+                                                includes(std::move(source_file.includes)), methods(std::move(source_file.methods)), extra_lines(std::move(source_file.extra_lines)) {}
+        std::string name_with_path;
+        std::unique_ptr<FileReader> source_reader;
+        std::vector<un_ptr(Include)> includes;
+        std::vector<un_ptr(Method)> methods;
+        std::vector<un_ptr(Line)> extra_lines; 
+    };
+
 protected:
     void scrape();
     
@@ -38,9 +67,8 @@ protected:
     std::vector<std::string> members;
     std::vector<std::string> namespaces;
     std::vector<un_ptr(Definition)> definitions; 
-    std::unique_ptr<FileReader> headed_reader;
-    std::unique_ptr<FileReader> source_reader;
-
+    HeaderFile header;
+    SourceFile source;
 };
 
-#endif // CLASS_SCRAPER_H
+#endif // CLASS_SCRAPER_H   
