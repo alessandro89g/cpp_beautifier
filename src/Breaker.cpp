@@ -3,12 +3,17 @@
 
 using namespace std;
 
+Breaker& Breaker::get_instance() {
+    static Breaker instance;
+    return instance;
+}
+
 Breaker::Method Breaker::read_method(const string& string_method, uint line_start, Access access) {
     DEBUG("===============================")
     DEBUG(string_method)
     Method method;
-    method.line_start = line_start;
-    method.line_end = line_start + lines_in_block(string_method);
+    method.body.line_start = line_start;
+    method.body.line_end = line_start + lines_in_block(string_method);
     method.access = access;
     method.type = Type::METHOD;
     method.body = read_body(string_method);
@@ -143,13 +148,13 @@ string Breaker::method_to_string(const Method& method, bool more_info = false) {
         ss << " " << modifier;
     }
     if (more_info) {
-        if (method.body != "") 
-            ss << " {\n " << method.body << "\n}\n\n";
+        if (method.body.body != "") 
+            ss << " {\n " << static_cast<const char*>(method.body) << "\n}\n\n";
         else 
             ss << ";\n\n";
         ss << " Access: " << method.access << '\n';
-        ss << " Line start: " << method.line_start << "\n";
-        ss << " Line end: " << method.line_end << "\n";
+        ss << " Line start: " << method.body.line_start << "\n";
+        ss << " Line end: " << method.body.line_end << "\n";
     }
 
     return ss.str();
@@ -230,30 +235,32 @@ std::queue<Breaker::Block> Breaker::split_in_blocks(const std::string& str) cons
     DEBUG("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)")
     DEBUG("===================================================")
 
-    std::string block;
     std::queue<Block> blocks;
     std::vector<std::string> lines = string_split(text, "\n");
     size_t p_balance;
     size_t line_count;
-    size_t line_first;
     
     for (size_t i = 0; i < lines.size(); i++) {
-        if (lines[i] == "") {
+        if (lines[i] == "" || lines[i] == "\n") {
             continue;
         }
+        Block block(remove_trailing_spaces(lines[i]), i);
         line_count = 0;
-        line_first = i;
         p_balance = parentheses_balance(lines[i], '{');
         if (p_balance != 0) {
-            block = remove_trailing_spaces(lines[i]);
             while(p_balance != 0) {
                 i++;
-                block += '\n' + remove_trailing_spaces(lines[i]);
+                string to_add = remove_trailing_spaces(lines[i]);
+                if (to_add[0]=='{')
+                    to_add = ' ' + to_add;
+                block += '\n' + to_add;
                 line_count++;
                 p_balance += parentheses_balance(lines[i], '{');
             }
         }
-        blocks.emplace(std::move(Block(block, line_first)));
+        block = remove_multiple_spaces_between_words(block.body);
+        block = remove_trailing_new_lines(block.body);
+        blocks.emplace(std::move(block));
     }
     return blocks;
 }

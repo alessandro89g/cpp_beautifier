@@ -56,6 +56,11 @@ $(BUILD_DIR)/test_utilities: $(TEST_DIR)/test_utilities.cpp $(BUILD_DIR)/utiliti
 	@echo "Creating executable.."
 	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
 
+$(BUILD_DIR)/test_Breaker: $(TEST_DIR)/test_Breaker.cpp $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/utilities.o
+	@echo "Creating executable.."
+	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
+
+
 run_test: $(BUILD_DIR)/test_utilities
 	@echo "Running tests.."
 	./$(BUILD_DIR)/test_utilities

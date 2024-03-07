@@ -1,5 +1,6 @@
 #include "include/ClassScraper.hpp"
 #include "include/utilities.hpp"
+#include <queue>
 
 #ifndef DEBUG
     #define DEBUG(...)  cout << __VA_ARGS__ << endl;
@@ -18,12 +19,15 @@ int main(int argc, char const *argv[]) {
     DEBUG("Lines: " <<  string_split(header).size())
     DEBUG("=====================================")
 
-    vector<string> blocks = split_in_blocks(header);
-    for (const string& block : blocks) {
+    queue<Breaker::Block> blocks = file_reader.split_in_blocks(header);
+    size_t block_number = blocks.size();
+    while(!blocks.empty()) {
         DEBUG("=====================================")
-        DEBUG("Block: \n" << block)
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end
+                                << ": \n" << blocks.front().body)
+        blocks.pop();
     }
-    DEBUG("Number of blocks: " << blocks.size())
+    DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
     string source = file_reader.get_source_content();
@@ -31,12 +35,15 @@ int main(int argc, char const *argv[]) {
     DEBUG("Lines: " <<  string_split(source).size())
     DEBUG("=====================================")
 
-    blocks = split_in_blocks(source);
-    for (const string& block : blocks) {
+    blocks = file_reader.split_in_blocks(source);
+    block_number = blocks.size();
+    while(!blocks.empty()) {
         DEBUG("=====================================")
-        DEBUG("Block: \n" << block)
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end
+                                << ": \n" << blocks.front().body)
+        blocks.pop();
     }
-    DEBUG("Number of blocks: " << blocks.size())
+    DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
     abort();

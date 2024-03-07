@@ -139,5 +139,35 @@ std::string string_join(const std::vector<std::string>& strings, const std::stri
         }
     }
     return result;
+}
 
+std::string remove_multiple_spaces_between_words(const std::string& string) {
+    std::string result;
+    size_t i = 0;
+    
+    start_line:
+    while(string[i]==' ') {
+        result += ' ';
+        ++i;
+    }
+    bool previous_was_space = false;
+    while(i < string.size()) {
+        if (string[i] != ' ') {
+            result += string[i];
+            if (string[i]=='\n') {
+                i++;
+                goto start_line;
+            }
+            previous_was_space = false;
+        } else if (!previous_was_space) {
+            result += string[i];
+            previous_was_space = true;
+        }
+        ++i;
+    }
+    if (result[result.size()-1] == ' ') {
+        result.erase(result.end()-1);
+    }
+    
+    return result;
 }

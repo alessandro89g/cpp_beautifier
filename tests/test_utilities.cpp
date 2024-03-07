@@ -172,3 +172,33 @@ TEST(EliminateParenthesesInSubstringsAndChars, ParenthesisInCharAndString) {
     std::string result = eliminate_parentheses_in_substrings_and_chars(str);
     ASSERT_EQ(result, "    return ~+~~+~;");
 }
+
+TEST(Eliminate_multiple_spaces_between_words, NoSpaces) {
+    std::string str = "HelloWorld";
+    std::string result = remove_multiple_spaces_between_words(str);
+    ASSERT_EQ(result, "HelloWorld");
+}
+
+TEST(Eliminate_multiple_spaces_between_words, SingleSpace) {
+    std::string str = "Hello World";
+    std::string result = remove_multiple_spaces_between_words(str);
+    ASSERT_EQ(result, "Hello World");
+}
+
+TEST(Eliminate_multiple_spaces_between_words, MultipleSpaces) {
+    std::string str = "Hello    World";
+    std::string result = remove_multiple_spaces_between_words(str);
+    ASSERT_EQ(result, "Hello World");
+}
+
+TEST(Eliminate_multiple_spaces_between_words, MultipleSpacesBetweenWords) {
+    std::string str = "Hello    World    This    Is    A    Test";
+    std::string result = remove_multiple_spaces_between_words(str);
+    ASSERT_EQ(result, "Hello World This Is A Test");
+}
+
+TEST(RemoveTrailingNewLinesTest, MultipleSpacesBetweenWordsAndLeadingSpaces) {
+    std::string str = "    Hello    World    This    Is    A    Test    ";
+    std::string result = remove_multiple_spaces_between_words(str);
+    ASSERT_EQ(result, "    Hello World This Is A Test");
+}

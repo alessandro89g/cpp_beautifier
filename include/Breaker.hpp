@@ -2,6 +2,7 @@
 #define BREAKER_H
 
 #include "../include/RegexDefinitions.hpp"
+#include "../include/utilities.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -45,8 +46,24 @@ public:
     };
 
     struct Block {
+        Block() = default;
+        Block(const std::string& str, uint line_start) : body(str), line_start(line_start) {
+            line_end = line_start + Breaker::get_instance().lines_in_block(str);
+        }
         std::string body;
         uint line_start;
+        uint line_end;
+        Block& operator += (const std::string& str) {
+            body += str;
+            line_end += Breaker::get_instance().lines_in_block(str);
+            return *this;
+        }
+        Block& operator = (const std::string& str) {
+            body = str;
+            line_end = line_start + Breaker::get_instance().lines_in_block(str);
+            return *this;
+        }
+        explicit operator const char* () const { return body.c_str(); }
     };
 
     struct Definition {
@@ -54,9 +71,7 @@ public:
         Access access;
         std::string name;
         std::string implementation_body;
-        std::string body;
-        uint line_start;
-        uint line_end;
+        Block body;
         std::vector<Modifier> pre_modifiers;
         std::vector<Modifier> post_modifiers;
         bool definition_in_header;
@@ -67,24 +82,24 @@ public:
         bool is_system;
     };
 
-    struct Method : Definition {
+    struct Method : public Definition {
         std::string owner_class;
         std::vector<std::string> args;
         std::string return_type;
     };
 
-    struct Constructor : Definition {
+    struct Constructor : public Definition {
         std::vector<std::string> args;
         std::vector<std::string> initializer_list;
         bool is_deleted;
     };
 
-    struct Destructor : Definition {
+    struct Destructor : public Definition {
         bool is_virtual;
         bool is_deleted;
     };
 
-    struct Member : Definition {
+    struct Member : public Definition {
         std::string type;
     };
 
@@ -96,15 +111,13 @@ public:
 
     std::queue<Block> split_in_blocks(const std::string& str) const;
 
-    static Breaker& get_instance() {
-        static Breaker instance;
-        return instance;
-    }
+    static Breaker& get_instance();
 
 protected:
     Breaker() = default;
     Breaker(const Breaker& breaker) = delete;
     Breaker(Breaker&& breaker) = delete;
+    Breaker operator = (const Breaker& breaker) = delete;
 
     std::vector<Modifier> read_modifiers(const std::string& string_modifiers);
 
@@ -129,9 +142,6 @@ protected:
     }
     friend std::ostream& operator<<(std::ostream& os, const Access& access);
     friend std::ostream& operator<<(std::ostream& os, const Modifier& modifier);
-
-private:
-    static Breaker instance;
 
 };
 

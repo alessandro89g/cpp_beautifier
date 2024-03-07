@@ -1,0 +1,181 @@
+#include <gtest/gtest.h>
+#include "../include/Breaker.hpp"
+
+TEST(BreakerTest, ReadMethod) {
+    Breaker& breaker = Breaker::get_instance();
+    Breaker::Method method = breaker.read_method("int main(int argc, char** argv) {", 0, Breaker::Access::PUBLIC);
+    EXPECT_EQ(method.name, "main");
+    EXPECT_EQ(method.return_type, "int");
+    EXPECT_EQ(method.args.size(), 2);
+    EXPECT_EQ(method.args[0], "int argc");
+    EXPECT_EQ(method.args[1], "char** argv");
+}
+
+TEST(BreakerTest, SPLITINTO2BLOCKS) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = "int sum (int a, int b) {\n"
+    "    return a+b;\n"
+    "}\n"
+    "\n"
+    "int main(int argc, char** argv) {\n"
+    "    return 0;\n"
+    "}";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+
+    EXPECT_EQ(blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 2);
+    EXPECT_EQ(blocks.front().body, "int sum (int a, int b) {\n    return a+b;\n}");
+
+
+    EXPECT_EQ(blocks.back().line_start, 4);
+    EXPECT_EQ(blocks.back().line_end, 6);
+    EXPECT_EQ(blocks.back().body, "int main(int argc, char** argv) {\n    return 0;\n}");
+
+}
+
+TEST(BreakerTest, SPLITINTO2BLOCKSBUTMODIFYING) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = 
+                        "int sum (int a, int b) {\n"
+                        "    return a+b;\n"
+                        "}\n"
+                        "\n"
+                        "int main(int argc, char** argv)\n"
+                        "{\n"
+                        "    return 0;\n"
+                        "}\n";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+
+    EXPECT_EQ(blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 2);
+    EXPECT_EQ(blocks.front().body, "int sum (int a, int b) {\n    return a+b;\n}");
+    
+
+
+    EXPECT_EQ(blocks.back().line_start, 4);
+    EXPECT_EQ(blocks.back().line_end, 6);
+    EXPECT_EQ(blocks.back().body, "int main(int argc, char** argv) {\n    return 0;\n}");
+}
+
+TEST(BreakerTest, SPLITINTO2BLOCKSBUTMODIFYINGMORE) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = 
+                        "int sum (int a,"
+                        "             int b)"
+                        "{\n"
+                        "    return a+b;\n"
+                        "}\n"
+                        "\n"
+                        "int main(int argc, char** argv)\n"
+                        "{\n"
+                        "    return 0;\n"
+                        "}\n";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+    DEBUG("BODY: " << blocks.front().body)
+    DEBUG("BODY: " << blocks.back().body)
+
+    EXPECT_EQ(blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 2);
+    EXPECT_EQ(blocks.front().body, "int sum (int a, int b){\n    return a+b;\n}");
+    
+
+    EXPECT_EQ(blocks.back().line_start, 4);
+    EXPECT_EQ(blocks.back().line_end, 6);
+    EXPECT_EQ(blocks.back().body, "int main(int argc, char** argv) {\n    return 0;\n}");
+}
+
+
+TEST(BreakerTest, SPLITINTO2BLOCKSBUTMODIFYINGMOREANDMORE) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = 
+                        "int sum (int a,"
+                        "             int b)"
+                        "{\n"
+                        "    return a+b;\n"
+                        "}\n"
+                        "\n"
+                        "int main(int argc, char** argv)\n"
+                        "{\n"
+                        "    return 0;\n"
+                        "}\n";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+    DEBUG("BODY: " << blocks.front().body)
+    DEBUG("BODY: " << blocks.back().body)
+
+    EXPECT_EQ(blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 2);
+    EXPECT_EQ(blocks.front().body, "int sum (int a, int b){\n    return a+b;\n}");
+    
+
+    EXPECT_EQ(blocks.back().line_start, 4);
+    EXPECT_EQ(blocks.back().line_end, 6);
+    EXPECT_EQ(blocks.back().body, "int main(int argc, char** argv) {\n    return 0;\n}");
+}
+
+TEST(BreakerTest, SPLITINTO3BLOCKS) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = 
+                        "int sum (int a, int b) {\n"
+                        "    return a+b;\n"
+                        "}\n"
+                        "\n"
+                        "int main(int argc, char** argv) {\n"
+                        "    return 0;\n"
+                        "}\n"
+                        "int sum2 (int a, int b) {\n"
+                        "    return a+b;\n"
+                        "}";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+
+    
+    (blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 2);
+    EXPECT_EQ(blocks.front().body, "int sum (int a, int b) {\n    return a+b;\n}"); 
+
+    blocks.pop();
+    EXPECT_EQ(blocks.front().line_start, 4);
+    EXPECT_EQ(blocks.front().line_end, 6);
+    EXPECT_EQ(blocks.front().body, "int main(int argc, char** argv) {\n    return 0;\n}");
+
+    blocks.pop();
+    EXPECT_EQ(blocks.front().line_start, 7);
+    EXPECT_EQ(blocks.front().line_end, 9);
+    EXPECT_EQ(blocks.front().body, "int sum2 (int a, int b) {\n    return a+b;\n}");
+}
+
+TEST(BreakerTest, SPLITINTO3LONGERBLOCKSANDMODIFYING) {
+    Breaker& breaker = Breaker::get_instance();
+    
+
+    std::string code = 
+                        "int function1() {\n"
+                            "    int a = 5;\n"
+                            "    int b = 10;\n"
+                            "    int sum = a + b;\n"
+                            "    return sum;\n"
+                            "}\n"
+                            "\n"
+                            "void function2() {\n"
+                            "    std::cout << \"Hello, World!\" << std::endl;\n"
+                            "}\n"
+                            "\n"
+                            "float function3(float x, float y) {\n"
+                            "    float result = x * y;\n"
+                            "    return result;\n"
+                            "}";
+    std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
+
+    EXPECT_EQ(blocks.front().line_start, 0);
+    EXPECT_EQ(blocks.front().line_end, 5);
+    EXPECT_EQ(blocks.front().body, "int function1() {\n    int a = 5;\n    int b = 10;\n    int sum = a + b;\n    return sum;\n}");
+
+    blocks.pop();
+    EXPECT_EQ(blocks.front().line_start, 7);
+    EXPECT_EQ(blocks.front().line_end, 9);
+    EXPECT_EQ(blocks.front().body, "void function2() {\n    std::cout << \"Hello, World!\" << std::endl;\n}");
+
+    blocks.pop();
+    EXPECT_EQ(blocks.front().line_start, 11);
+    EXPECT_EQ(blocks.front().line_end, 14);
+    EXPECT_EQ(blocks.front().body, "float function3(float x, float y) {\n    float result = x * y;\n    return result;\n}");
+}   
