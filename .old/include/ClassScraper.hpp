@@ -95,7 +95,7 @@ public:
         string result;
         uint depth = Block::m_base_depth;
         while(depth--) {
-            DEBUG("Depth: " << depth)
+//          DEBUG("Depth: " << depth)
             result += "    ";
         }
         result += "#include ";

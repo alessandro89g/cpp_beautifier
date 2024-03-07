@@ -99,8 +99,8 @@ TEST(BreakerTest, SPLITINTO2BLOCKSBUTMODIFYINGMORE) {
                         "    return 0;\n"
                         "}\n";
     std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
-    DEBUG("BODY: " << blocks.front().body)
-    DEBUG("BODY: " << blocks.back().body)
+//  DEBUG("BODY: " << blocks.front().body)
+//  DEBUG("BODY: " << blocks.back().body)
 
     EXPECT_EQ(blocks.front().line_start, 0);
     EXPECT_EQ(blocks.front().line_end, 2);
@@ -127,8 +127,8 @@ TEST(BreakerTest, SPLITINTO2BLOCKSBUTMODIFYINGMOREANDMORE) {
                         "    return 0;\n"
                         "}\n";
     std::queue<Breaker::Block> blocks = breaker.split_in_blocks(code);
-    DEBUG("BODY: " << blocks.front().body)
-    DEBUG("BODY: " << blocks.back().body)
+//  DEBUG("BODY: " << blocks.front().body)
+//  DEBUG("BODY: " << blocks.back().body)
 
     EXPECT_EQ(blocks.front().line_start, 0);
     EXPECT_EQ(blocks.front().line_end, 2);

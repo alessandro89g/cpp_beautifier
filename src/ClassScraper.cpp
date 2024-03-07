@@ -36,7 +36,7 @@ void ClassScraper::find_methods() {
 
     while(regex_search(text,match,pattern)) {
         methods.push_back(match.str());
-        Method method = read_method(match.str(), 0, Access::PUBLIC);
+        Method method = Breaker::get_instance().read_method(match.str(), 0, Access::PUBLIC);
         text = match.suffix();
     }
 }

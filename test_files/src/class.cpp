@@ -84,8 +84,8 @@ bool Beautifier::is_a_method(const std::string& line,
         "(" +keywords +
         "((" + class_name + "::(?!" + class_name + ")" + allowed_naming + ")|" +
         "((?!" + class_name + ")" + allowed_naming + "))).*\\s*";   
-    DEBUG(method_scheleton);
-    DEBUG("---->" + line);
+//  DEBUG(method_scheleton);
+//  DEBUG("---->" + line);
     return std::regex_match(line, std::regex(method_scheleton));
 }
 

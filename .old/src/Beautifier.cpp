@@ -15,9 +15,9 @@ std::vector<std::string> string_split(const std::string& str, char delimiter = '
 
 Beautifier::Beautifier(const std::string& header, const std::string& source)
     : m_header(header), m_source(source), m_destructor("") {
-    DEBUG("Parametric constructor")
+//  DEBUG("Parametric constructor")
     std::string class_inheritance = string_inheritance_and_access;
-    DEBUG(class_inheritance)
+//  DEBUG(class_inheritance)
 }
 
 std::string Beautifier::getHeader() const {
@@ -33,7 +33,7 @@ void Beautifier::reorder_header() {
 }
 
 void Beautifier::dissect_header() {
-    DEBUG("Dissecting header")
+//  DEBUG("Dissecting header")
     m_file.open(m_header);
     if (!m_file.is_open()) {
         throw std::runtime_error("File " + m_header.string() + " not found");
@@ -62,15 +62,15 @@ void Beautifier::clean_string(std::string& str, bool clear_initial_spaces = fals
 }
 
 bool Beautifier::extract_include(const std::string& line) {
-    DEBUG("Checking if line is an include")
-    DEBUG(line)
+//  DEBUG("Checking if line is an include")
+//  DEBUG(line)
     std::string header_regex = "\\s*#include\\s+(:?<(.*)>|\"(.*)\")";
     std::regex rgx(header_regex);
     std::smatch matches;
     if (std::regex_search(line, matches, rgx)) {
-        DEBUG("Match found")
+//      DEBUG("Match found")
         for (size_t i = 0; i < matches.size(); ++i) {
-            DEBUG(matches[i].str())
+//          DEBUG(matches[i].str())
         }
         bool is_system = matches[1].str() == "<" + matches[2].str() + ">";
         std::string include_name = is_system ? matches[2].str() : matches[3].str();
@@ -78,38 +78,38 @@ bool Beautifier::extract_include(const std::string& line) {
         m_includes.emplace_back(include);
         return true;
     }
-    DEBUG("No match found")
+//  DEBUG("No match found")
     return false;
 }
 
 bool Beautifier::extract_class(const std::string& line) {
-    DEBUG("Checking if line is a class")
-    DEBUG(line)
+//  DEBUG("Checking if line is a class")
+//  DEBUG(line)
     std::string allowed_naming = "([a-zA-Z_][a-zA-Z0-9_]*)";
     std::string class_regex = "\\s*class\\s+" + allowed_naming;
     std::regex rgx(class_regex);
     std::smatch matches;
     if (std::regex_search(line, matches, rgx)) {
-        DEBUG("Match found")
+//      DEBUG("Match found")
         for (size_t i = 0; i < matches.size(); ++i) {
-            DEBUG(matches[i].str())
+//          DEBUG(matches[i].str())
         }
         std::string class_name = matches[1].str();
         m_class.m_name = class_name;
-        DEBUG("Class name: " + class_name)
+//      DEBUG("Class name: " + class_name)
     } else {
         return false;
     }
 
     rgx.assign("\\s*class\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*:\\s*(.+)\\s\\{");
-    DEBUG("CHECKING INHERITANCE")
+//  DEBUG("CHECKING INHERITANCE")
     if (std::regex_match(line, matches, rgx)) {
-        DEBUG("Match found")
+//      DEBUG("Match found")
         if (matches.size() != 3) {
             throw std::runtime_error("Error extracting inheritance");
         }
         std::string other = matches[2].str();
-        DEBUG("Inheritance found: " + other)
+//      DEBUG("Inheritance found: " + other)
         std::vector<std::string> inheritance = string_split(other);
         for (auto& i : inheritance) {
             clean_string(i, true);
@@ -133,7 +133,7 @@ bool Beautifier::extract_class(const std::string& line) {
             return true;
         }
     }
-    DEBUG("No match found")
+//  DEBUG("No match found")
     return false;
 }
 
@@ -166,8 +166,8 @@ bool Beautifier::is_a_method(const std::string& line) const {
         "(" +keywords +
         "((" + m_class.m_name + "::(?!" + m_class.m_name + ")" + allowed_naming + ")|" +
         "((?!" + m_class.m_name + ")" + allowed_naming + "))).*\\s*";   
-    DEBUG(method_scheleton);
-    DEBUG("---->" + line);
+//  DEBUG(method_scheleton);
+//  DEBUG("---->" + line);
     return std::regex_match(line, std::regex(method_scheleton));
 }
 

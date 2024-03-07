@@ -13,8 +13,8 @@ Breaker::Method Breaker::read_method(const Block& block, Access access) const {
 }
 
 Breaker::Method Breaker::read_method(const string& string_method, uint line_start, Access access) const {
-    DEBUG("===============================")
-    DEBUG(string_method)
+//  DEBUG("===============================")
+//  DEBUG(string_method)
     Method method;
     method.body.line_start = line_start;
     method.body.line_end = line_start + lines_in_block(string_method);
@@ -40,7 +40,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
             method.post_modifiers = read_modifiers(post_modifiers);
         }
     }
-    DEBUG("POST MODIFIERS: " << post_modifiers)
+//  DEBUG("POST MODIFIERS: " << post_modifiers)
     while (head.find_last_of(" ") == head.length() - 1) {
         head = head.substr(0, head.length() - 1);
     }
@@ -54,7 +54,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
     method.pre_modifiers = read_modifiers(head);
     method.args = read_args(string_method.substr(string_method.find("("), string_method.find(")") - string_method.find("(") + 2));
 
-    DEBUG(method_to_string(method, true))
+//  DEBUG(method_to_string(method, true))
 
     return method;
 }
@@ -236,10 +236,10 @@ std::queue<Breaker::Block> Breaker::split_in_blocks(const std::string& str) cons
     while (regex_search(text, std::regex("(\\s*)\\n(\\s*)\\:((.+?)\\{)"))) {
         text = regex_replace(text, std::regex("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)"), " : $3");
     }
-    DEBUG("===================================================")
-    DEBUG(text);
-    DEBUG("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)")
-    DEBUG("===================================================")
+    // DEBUG("===================================================")
+    // DEBUG(text);
+    // DEBUG("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)")
+    // DEBUG("===================================================")
 
     std::queue<Block> blocks;
     std::vector<std::string> lines = string_split(text, "\n");

@@ -13,8 +13,8 @@ TEST(ClassScraperTest, CHECK_INCLUDES) {
     for (const auto& block : blocks) {
         if (dynamic_cast<ClassScraper::Include*>(block.get())) {
             ClassScraper::Include* include = dynamic_cast<ClassScraper::Include*>(block.get());
-            DEBUG("Include: " << include->get_body()[0])
-            DEBUG(" ----->" << include->get_base_depth() << "  " << include->reconstruct())
+//          DEBUG("Include: " << include->get_body()[0])
+//          DEBUG(" ----->" << include->get_base_depth() << "  " << include->reconstruct())
         }
     }
 }

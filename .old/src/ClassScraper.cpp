@@ -47,25 +47,25 @@ void ClassScraper::dissect_header() {
         line_number++;
         if (std::regex_match(line, std::regex(COMMENT_LINE))) { // Replace std::match_regex with std::regex_match
             sh_ptr<Block> comment = std::make_shared<Block>(std::vector<string>{line}, line_number, "", 0);
-            DEBUG("Extracting comment: " << line)
+//          DEBUG("Extracting comment: " << line)
             continue;
         }
 
         for (const auto& c : line) {
             if (c == '{') {
                 m_depth++;
-                DEBUG("Depth: " << m_depth << " : changed at line " << line_number)
+//              DEBUG("Depth: " << m_depth << " : changed at line " << line_number)
             }
             if (c == '}') {
                 m_depth--;
-                DEBUG("Depth: " << m_depth << " : changed at line " << line_number)
+//              DEBUG("Depth: " << m_depth << " : changed at line " << line_number)
 
             }
         }
         
         if (line.find("#include") != string::npos) {
             clean_string(line);
-            DEBUG("Extracting include: " << line)
+//          DEBUG("Extracting include: " << line)
             sh_ptr<Block> include = std::make_shared<Include>(line, line_number, m_depth);
             m_blocks.push_back(std::move(include));
             continue;

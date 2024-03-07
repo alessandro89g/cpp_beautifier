@@ -12,6 +12,10 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
     DEBUG("STARTED");
+    if (argc != 3) {
+        DEBUG("Usage: " << argv[0] << " <header_file> <source_file>")
+        return 1;
+    }
     ClassScraper file_reader(argv[1], argv[2]);
 
     string header = file_reader.get_header_content();
@@ -23,8 +27,7 @@ int main(int argc, char const *argv[]) {
     size_t block_number = blocks.size();
     while(!blocks.empty()) {
         DEBUG("=====================================")
-        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end
-                                << ": \n" << blocks.front().body)
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end << ": \n" << blocks.front().body)
         blocks.pop();
     }
     DEBUG("Number of blocks: " << block_number)
@@ -39,14 +42,13 @@ int main(int argc, char const *argv[]) {
     block_number = blocks.size();
     while(!blocks.empty()) {
         DEBUG("=====================================")
-        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end
-                                << ": \n" << blocks.front().body)
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end << ": \n" << blocks.front().body)
         blocks.pop();
     }
     DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
-    abort();
+    return 1;
 
     size_t pos = 0;
     for (const string& method : file_reader.get_methods()) {
