@@ -209,3 +209,51 @@ ostream& operator<<(ostream& os, const Breaker::Modifier& modifier) {
     }
     return os;
 }
+
+std::queue<Breaker::Block> Breaker::split_in_blocks(const std::string& str) const {
+    std::string text = remove_leading_trailing_spaces(str);
+    // Removing curly braces at beginning of lines
+    while (regex_search(text, std::regex("\\n\\{"))) {
+        text = regex_replace(text, std::regex("\\n\\{"), " {");
+    }
+    // Writing the class declaration in one line
+    while (regex_search(text, std::regex("(\\h*)\\bclass\\b(.+)\\n(.+)\\{"))) {
+        text = regex_replace(text, std::regex("(\\h*)\\bclass\\b(.+)\\n(.+)\\{"), "$1class$2 $3 {");
+    }
+
+    // Writing the constructor initialization list in one line
+    while (regex_search(text, std::regex("(\\s*)\\n(\\s*)\\:((.+?)\\{)"))) {
+        text = regex_replace(text, std::regex("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)"), " : $3");
+    }
+    DEBUG("===================================================")
+    DEBUG(text);
+    DEBUG("(\\s*)\\n(\\s*)\\:\\s*((.+?)\\{)")
+    DEBUG("===================================================")
+
+    std::string block;
+    std::queue<Block> blocks;
+    std::vector<std::string> lines = string_split(text, "\n");
+    size_t p_balance;
+    size_t line_count;
+    size_t line_first;
+    
+    for (size_t i = 0; i < lines.size(); i++) {
+        if (lines[i] == "") {
+            continue;
+        }
+        line_count = 0;
+        line_first = i;
+        p_balance = parentheses_balance(lines[i], '{');
+        if (p_balance != 0) {
+            block = remove_trailing_spaces(lines[i]);
+            while(p_balance != 0) {
+                i++;
+                block += '\n' + remove_trailing_spaces(lines[i]);
+                line_count++;
+                p_balance += parentheses_balance(lines[i], '{');
+            }
+        }
+        blocks.emplace(std::move(Block(block, line_first)));
+    }
+    return blocks;
+}

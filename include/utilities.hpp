@@ -29,6 +29,6 @@ std::vector<std::string> string_split(const std::string& str, const std::string&
 
 std::string string_join(const std::vector<std::string>& strings, const std::string& delimiter = "\n");
 
-std::vector<std::string> split_in_blocks(const std::string& str);
+
 
 #endif // UTILITIES_H

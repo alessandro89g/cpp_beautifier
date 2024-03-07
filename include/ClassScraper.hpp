@@ -3,6 +3,7 @@
 #include "FileReader.hpp"
 #include "Breaker.hpp"
 
+
 class ClassScraper : public Breaker {
 public:
     ClassScraper() = delete;
@@ -17,18 +18,20 @@ public:
     std::string get_header_content() const;
     std::string get_source_content() const;
 
-    struct Class : Definition {
-        std::vector<un_ptr(Include)> includes;
-        std::vector<un_ptr(Member)> members;
-        std::vector<un_ptr(Method)> methods;
-        std::vector<un_ptr(Constructor)> constructors;
+    struct Class : public Definition {
+    private:
+        std::vector<Include> includes;
+        std::vector<Member> members;
+        std::vector<Method> methods;
+        std::vector<Constructor> constructors;
         Destructor destructors;
-        std::vector<un_ptr(Class)> sub_classes;
+        std::vector<Class> nested_classes;
     };
 
     struct Line {
         std::string content;
         uint line_number;
+        operator std::string () const { return content; }
     };
 
     struct HeaderFile {
@@ -38,9 +41,9 @@ public:
             includes(std::move(header_file.includes)), classes(std::move(header_file.classes)), extra_lines(std::move(header_file.extra_lines)) {}
         std::string name_with_path;
         std::unique_ptr<FileReader> header_reader;
-        std::vector<un_ptr(Include)> includes;
-        std::vector<un_ptr(Class)> classes;
-        std::vector<un_ptr(Line)> extra_lines; 
+        std::vector<Include> includes;
+        std::vector<Class> classes;
+        std::vector<Line> extra_lines; 
     };
 
     struct SourceFile {
@@ -50,9 +53,9 @@ public:
                                                 includes(std::move(source_file.includes)), methods(std::move(source_file.methods)), extra_lines(std::move(source_file.extra_lines)) {}
         std::string name_with_path;
         std::unique_ptr<FileReader> source_reader;
-        std::vector<un_ptr(Include)> includes;
-        std::vector<un_ptr(Method)> methods;
-        std::vector<un_ptr(Line)> extra_lines; 
+        std::vector<Include> includes;
+        std::vector<Method> methods;
+        std::vector<Line> extra_lines; 
     };
 
 protected:
@@ -66,7 +69,6 @@ protected:
     std::vector<std::string> methods;
     std::vector<std::string> members;
     std::vector<std::string> namespaces;
-    std::vector<un_ptr(Definition)> definitions; 
     HeaderFile header;
     SourceFile source;
 };

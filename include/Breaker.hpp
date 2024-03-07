@@ -7,9 +7,11 @@
 #include <iostream>
 #include <regex>
 #include <memory>
+#include <queue>
 
 class Breaker {
-    #define un_ptr(x) std::unique_ptr<x>
+    #define un_ptr(x) std::shared_pointer<x>
+    #define mk_ptr(x) std::make_shared<x>
         #ifndef DEBUG
     #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
     #endif // DEBUG
@@ -40,6 +42,11 @@ public:
         PUBLIC,
         PROTECTED,
         PRIVATE
+    };
+
+    struct Block {
+        std::string body;
+        uint line_start;
     };
 
     struct Definition {
@@ -87,7 +94,17 @@ public:
 
     std::string read_body(const std::string& string_method);
 
-private:
+    std::queue<Block> split_in_blocks(const std::string& str) const;
+
+    static Breaker& get_instance() {
+        static Breaker instance;
+        return instance;
+    }
+
+protected:
+    Breaker() = default;
+    Breaker(const Breaker& breaker) = delete;
+    Breaker(Breaker&& breaker) = delete;
 
     std::vector<Modifier> read_modifiers(const std::string& string_modifiers);
 
@@ -112,7 +129,9 @@ private:
     }
     friend std::ostream& operator<<(std::ostream& os, const Access& access);
     friend std::ostream& operator<<(std::ostream& os, const Modifier& modifier);
-    
+
+private:
+    static Breaker instance;
 
 };
 
