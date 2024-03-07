@@ -8,7 +8,11 @@ Breaker& Breaker::get_instance() {
     return instance;
 }
 
-Breaker::Method Breaker::read_method(const string& string_method, uint line_start, Access access) {
+Breaker::Method Breaker::read_method(const Block& block, Access access) const {
+    return read_method(static_cast<const char*>(block), block.line_start, access);
+}
+
+Breaker::Method Breaker::read_method(const string& string_method, uint line_start, Access access) const {
     DEBUG("===============================")
     DEBUG(string_method)
     Method method;
@@ -55,7 +59,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
     return method;
 }
 
-vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers) {
+vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers) const {
     vector<Modifier> modifiers;
     vector<string> tokens = string_split(string_modifiers, " ");
     for (string& token : tokens) {
@@ -85,7 +89,7 @@ vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers
     return modifiers;
 }
 
-void Breaker::clear_string(string& str) {
+void Breaker::clear_string(string& str) const {
     if (str == "" || str == " ") {
         return;
     }
@@ -97,7 +101,7 @@ void Breaker::clear_string(string& str) {
     }
 }
 
-uint Breaker::lines_in_block(const string& block) {
+uint Breaker::lines_in_block(const string& block) const {
     uint lines = 0;
     for (const char& c : block) {
         if (c == '\n') {
@@ -108,7 +112,7 @@ uint Breaker::lines_in_block(const string& block) {
 }
 
 
-vector<string> Breaker::read_args(string string_args) {
+vector<string> Breaker::read_args(string string_args) const {
     string_args = string_args.substr(1, string_args.find(")")-1);
     vector<string> args = string_split(string_args, ",");
     for (string& arg : args) {
@@ -118,15 +122,17 @@ vector<string> Breaker::read_args(string string_args) {
     return args;
 }
 
-string Breaker::read_body(const string& string_method) {
+string Breaker::read_body(const string& string_method) const {
     if (string_method.find("{") == string::npos) {
         return "";
     }
     string body = string_method.substr(string_method.find("{") + 1, string_method.find_last_of("}") - string_method.find("{") - 1);
+    // body = remove_leading_trailing_spaces(body);
+    body = remove_leading_trailing_new_lines(body);
     return body;
 }
 
-string Breaker::method_to_string(const Method& method, bool more_info = false) {
+string Breaker::method_to_string(const Method& method, bool more_info = false) const {
     stringstream ss;
     for (const Modifier& modifier : method.pre_modifiers) {
         ss << modifier << " ";

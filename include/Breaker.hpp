@@ -105,9 +105,10 @@ public:
 
 public:
 
-    Method read_method(const std::string& string_method, uint line_start, Access access);
+    Method read_method(const std::string& string_method, uint line_start, Access access) const;
+    Method read_method(const Block& block, Access access) const;
 
-    std::string read_body(const std::string& string_method);
+    std::string read_body(const std::string& string_method) const;
 
     std::queue<Block> split_in_blocks(const std::string& str) const;
 
@@ -119,15 +120,15 @@ protected:
     Breaker(Breaker&& breaker) = delete;
     Breaker operator = (const Breaker& breaker) = delete;
 
-    std::vector<Modifier> read_modifiers(const std::string& string_modifiers);
+    std::vector<Modifier> read_modifiers(const std::string& string_modifiers) const;
 
-    void clear_string(std::string& str);
+    void clear_string(std::string& str) const;
 
-    uint lines_in_block(const std::string& block);
+    uint lines_in_block(const std::string& block) const;
 
-    std::vector<std::string> read_args(std::string string_args);
+    std::vector<std::string> read_args(std::string string_args) const;
 
-    std::string method_to_string(const Method& method, bool more_info);
+    std::string method_to_string(const Method& method, bool more_info) const;
 
 
     template<typename T>

@@ -11,6 +11,34 @@ TEST(BreakerTest, ReadMethod) {
     EXPECT_EQ(method.args[1], "char** argv");
 }
 
+TEST(BreakerTest, ReadMethodWithFiveArguments) {
+    Breaker& breaker = Breaker::get_instance();
+    std::string code = "double calculate(int a, short b, int c, float d, double e) {\n"
+                       "    double sum = a + b + c + d + e;\n"
+                       "    double product = a * b * c * d * e;\n"
+                       "    double difference = a - b - c - d - e;\n"
+                       "    double quotient = a / b / c / d / e;\n"
+                       "    double result = sum + product + difference + quotient;\n"
+                       "    return result;\n"
+                       "}";
+    Breaker::Method method = breaker.read_method(code, 0, Breaker::Access::PUBLIC);
+    EXPECT_EQ(method.name, "calculate");
+    EXPECT_EQ(method.return_type, "double");
+    EXPECT_EQ(method.args.size(), 5);
+    EXPECT_EQ(method.args[0], "int a");
+    EXPECT_EQ(method.args[1], "short b");
+    EXPECT_EQ(method.args[2], "int c");
+    EXPECT_EQ(method.args[3], "float d");
+    EXPECT_EQ(method.args[4], "double e");
+    EXPECT_EQ(method.body.body, "    double sum = a + b + c + d + e;\n"
+                           "    double product = a * b * c * d * e;\n"
+                           "    double difference = a - b - c - d - e;\n"
+                           "    double quotient = a / b / c / d / e;\n"
+                           "    double result = sum + product + difference + quotient;\n"
+                           "    return result;");
+}
+
+
 TEST(BreakerTest, SPLITINTO2BLOCKS) {
     Breaker& breaker = Breaker::get_instance();
     std::string code = "int sum (int a, int b) {\n"

@@ -1,11 +1,25 @@
 #include "../include/utilities.hpp"
 #include <regex>
 
+std::string remove_leading_new_lines(const std::string& string) {
+    std::string str = string;
+    while (str[0] == '\n') {
+        str.erase(str.begin());
+    }
+    return str;
+}
+
 std::string remove_trailing_new_lines(const std::string& string) {
     std::string str = string;
     while (str[str.size() - 1] == '\n') {
         str.erase(str.end() - 1);
     }
+    return str;
+}
+
+std::string remove_leading_trailing_new_lines(const std::string& string) {
+    std::string str = remove_leading_new_lines(string);
+    str = remove_trailing_new_lines(str);
     return str;
 }
 

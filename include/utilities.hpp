@@ -9,7 +9,11 @@
     #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
 #endif // DEBUG
 
+std::string remove_leading_new_lines(const std::string& string);
+
 std::string remove_trailing_new_lines(const std::string& string);
+
+std::string remove_leading_trailing_new_lines(const std::string& string);
 
 std::string remove_trailing_spaces(const std::string& string);
 
