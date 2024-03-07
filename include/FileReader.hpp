@@ -16,19 +16,23 @@ class FileReader {
         #define DEBUG(...) std::cout << __VA_ARGS__ << std::endl;
     #endif // DEBUG
 public:
+    enum Type {
+        HEADER,
+        SOURCE
+    };
+
     FileReader() = delete;
     FileReader(const std::string& file_string);
     FileReader(const FileReader& file_reader) = delete;
     FileReader(FileReader&& file_reader) = delete;
 
     std::string get_file_content() const;
-    std::vector<std::string> get_blocks() const;
+
+    Type get_type() const { return type; }
 
 private:
 
     void open_and_read_file(const std::string& file_path);
-
-    void break_into_blocks();
 
     void read_file(const std::string& file_string);
 
@@ -36,7 +40,7 @@ private:
 
 private:
     std::string file_content;
-    std::vector<std::string> blocks;
+    Type type;
 };
 
 #endif // FILE_READER_H

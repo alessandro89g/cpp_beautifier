@@ -2,6 +2,8 @@
 #define CLASS_SCRAPER
 #include "FileReader.hpp"
 #include "Breaker.hpp"
+#include <queue>
+#include <vector>
 
 
 class ClassScraper : public Breaker {
@@ -20,12 +22,12 @@ public:
 
     struct Class : public Definition {
     private:
-        std::vector<Include> includes;
-        std::vector<Member> members;
-        std::vector<Method> methods;
-        std::vector<Constructor> constructors;
-        Destructor destructors;
-        std::vector<Class> nested_classes;
+        std::vector<Include> _includes;
+        std::vector<Member> _members;
+        std::vector<Method> _methods;
+        std::vector<Constructor> _constructors;
+        Destructor _destructors;
+        std::vector<Class> _nested_classes;
     };
 
     struct Line {
@@ -60,6 +62,8 @@ public:
 
 protected:
     void scrape();
+
+    queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);
     
     void find_methods();
 
@@ -69,8 +73,9 @@ protected:
     std::vector<std::string> methods;
     std::vector<std::string> members;
     std::vector<std::string> namespaces;
-    HeaderFile header;
-    SourceFile source;
+    HeaderFile _header;
+    SourceFile _source;
+    Class _class;
 };
 
 #endif // CLASS_SCRAPER_H   

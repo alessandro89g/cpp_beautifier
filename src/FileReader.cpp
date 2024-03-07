@@ -11,10 +11,6 @@ string FileReader::get_file_content() const {
     return file_content;
 }
 
-vector<string> FileReader::get_blocks() const {
-    return blocks;
-}
-
 void FileReader::open_and_read_file(const string& file_path) {
     string line;
     ifstream file(file_path);
@@ -60,25 +56,4 @@ void FileReader::export_file(const string& file_path) {
         throw std::runtime_error("File not found: " + file_path);
     }
     file << file_content;
-}
-
-void FileReader::break_into_blocks() {
-    string block;
-    string line;
-    stringstream text(file_content);
-    size_t brakets = 0;
-    uint n_lines = 0;
-    while (getline(text, line, '\n')) {
-        if (line.find('{') != string::npos) {
-            brakets++;
-        }
-        if (line.find('}') != string::npos) {
-            brakets--;
-        }
-        block += line + '\n';
-        if (!brakets) {
-            blocks.push_back(block);
-            block.clear();
-        }
-    }
 }
