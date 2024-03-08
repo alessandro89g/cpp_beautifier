@@ -22,7 +22,7 @@ public:
 
     struct Class : public Definition {
     private:
-        std::vector<Include> _includes;
+        std::vector<Class> _inherits_from;
         std::vector<Member> _members;
         std::vector<Method> _methods;
         std::vector<Constructor> _constructors;
@@ -42,6 +42,7 @@ public:
         HeaderFile(HeaderFile&& header_file) :  name_with_path(header_file.name_with_path), header_reader(std::move(header_file.header_reader)),
             includes(std::move(header_file.includes)), classes(std::move(header_file.classes)), extra_lines(std::move(header_file.extra_lines)) {}
         std::string name_with_path;
+        std::vector<Include> _includes;
         std::unique_ptr<FileReader> header_reader;
         std::vector<Include> includes;
         std::vector<Class> classes;
@@ -63,7 +64,7 @@ public:
 protected:
     void scrape();
 
-    queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);
+    std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);
     
     void find_methods();
 
