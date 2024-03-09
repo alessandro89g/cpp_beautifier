@@ -7,8 +7,8 @@ FileReader::FileReader(const string& file_string) {
     open_and_read_file(file_string);
 }
 
-string FileReader::get_file_content() const {
-    return file_content;
+string FileReader::get_file_content(bool original) const {
+    return (original ? file_content_original : file_content_modified);
 }
 
 void FileReader::open_and_read_file(const string& file_path) {
@@ -18,18 +18,17 @@ void FileReader::open_and_read_file(const string& file_path) {
         throw std::runtime_error("File not found");
     }
     while (getline(file, line)) {
-        file_content += line + '\n';
+        file_content_original += line + '\n';
     }
     file.close();
-    file_content = remove_trailing_new_lines(file_content);
-    read_file(file_content);
+    file_content_modified = remove_trailing_new_lines(file_content_original);
+    modify_file(file_content_modified);
 }
 
 
-void FileReader::read_file(const string& file_string) {
+void FileReader::modify_file(const string& file_string) {
     string line;
     vector<string> lines = string_split(file_string);
-    file_content.clear();
     for (size_t i = 0; i < lines.size(); i++) {
         line = remove_trailing_spaces(lines[i]);
         uint parentheses = parentheses_balance(line);
@@ -45,15 +44,22 @@ void FileReader::read_file(const string& file_string) {
                 break;
             }
         }
-        file_content += line + '\n';
+        file_content_modified += line + '\n';
     }
-    file_content.erase(file_content.end() - 1);
+    file_content_modified.erase(file_content_modified.end() - 1);
 }
 
-void FileReader::export_file(const string& file_path) {
-    ofstream file(file_path);
+
+void FileReader::export_file(const std::string& file_path, bool original) const {
+    std::ofstream file(file_path, std::ios::trunc);
     if (!file.is_open()) {
-        throw std::runtime_error("File not found: " + file_path);
+        throw std::runtime_error("Could not generate: " + file_path);
     }
-    file << file_content;
+    if (original) {
+        file << file_content_original;
+    } else {
+        file << file_content_modified;
+    }
+    file.close();
 }
+    

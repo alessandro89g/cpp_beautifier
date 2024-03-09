@@ -60,6 +60,10 @@ $(BUILD_DIR)/test_Breaker: $(TEST_DIR)/test_Breaker.cpp $(BUILD_DIR)/Breaker.o $
 	@echo "Creating executable.."
 	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
 
+$(BUILD_DIR)/test_FileReader: $(TEST_DIR)/test_FileReader.cpp $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o
+	@echo "Creating executable.."
+	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
+
 
 run_test: $(BUILD_DIR)/test_utilities
 	@echo "Running tests.."

@@ -23,7 +23,8 @@ public:
         CONSTRUCTOR,
         DESTRUCTOR,
         METHOD,
-        MEMBER
+        MEMBER,
+        OTHER
     };
 
     enum Modifier {

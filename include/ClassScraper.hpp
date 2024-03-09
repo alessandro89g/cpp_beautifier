@@ -61,10 +61,14 @@ public:
         std::vector<Line> extra_lines; 
     };
 
+
+    std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);    Breaker::Type get_type(const Block& block) const;
 protected:
     void scrape();
 
-    std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);
+
+
+    Breaker::Type string_to_type(const std::string& type) const;
     
     void find_methods();
 

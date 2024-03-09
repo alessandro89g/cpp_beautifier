@@ -26,20 +26,21 @@ public:
     FileReader(const FileReader& file_reader) = delete;
     FileReader(FileReader&& file_reader) = delete;
 
-    std::string get_file_content() const;
+    std::string get_file_content(bool original = false) const;
+
+    void export_file(const std::string& file_path, bool original = false) const;
 
     Type get_type() const { return type; }
 
-private:
+protected:
 
     void open_and_read_file(const std::string& file_path);
 
-    void read_file(const std::string& file_string);
-
-    void export_file(const std::string& file_path);
+    void modify_file(const std::string& file_string);
 
 private:
-    std::string file_content;
+    std::string file_content_original;
+    std::string file_content_modified;
     Type type;
 };
 

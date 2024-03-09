@@ -56,24 +56,40 @@ void ClassScraper::find_classes() {
 
 
 queue<Breaker::Block> ClassScraper::break_into_blocks(const FileReader& file_reader) {
-    string line;
-    stringstream text(file_reader.get_file_content());
     size_t brakets = 0;
-    uint line_index = 0;
     queue<Breaker::Block> blocks;
-    while (getline(text, line, '\n')) {
-        Block block("",line_index);
-        if (line.find('{') != string::npos) {
-            brakets++;
-        }
-        if (line.find('}') != string::npos) {
-            brakets--;
-        }
-        block += line + '\n';
-        if (!brakets) {
-            blocks.push(std::move(block));
-        }
-    }
+    string content = file_reader.get_file_content();
 
+    uint line_index = 0;
+    for (size_t i = 0; i < content.size(); i++) {
+        vector<char> buffer;
+        buffer.reserve(200);
+        while(content[i] != ';') {
+            buffer.push_back(content[i]);
+            i++;
+            if (content[i] == '\n')
+                line_index++;
+        }
+        buffer.clear();
+        blocks.emplace(string(buffer.begin(), buffer.end()), line_index);
+    }
     return blocks;
+}
+
+Breaker::Type ClassScraper::get_type(const Block& block) const {
+    Type type;
+    // const string pattern_string = TYPE_RGX;
+    // smatch match;
+    // regex pattern(pattern_string);
+    // string text = block.body;
+
+    // uint line_start = block.line_start;
+    
+
+    // while(regex_search(text,match,pattern)) {
+    //     types.push_back(Breaker::get_instance().read_type(match.str()));
+    //     text = match.suffix();
+    // }
+
+    return type;
 }
