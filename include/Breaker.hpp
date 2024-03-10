@@ -9,6 +9,7 @@
 #include <regex>
 #include <memory>
 #include <queue>
+#include <optional>
 
 class Breaker {
     #define un_ptr(x) std::shared_pointer<x>
@@ -51,9 +52,10 @@ public:
         Block(const std::string& str, uint line_start) : body(str), line_start(line_start) {
             line_end = line_start + Breaker::get_instance().lines_in_block(str);
         }
-        std::string body;
-        uint line_start;
-        uint line_end;
+        Block(const std::string& str, uint line_start, Type type) : body(str), line_start(line_start), type(type) {
+            line_end = line_start + Breaker::get_instance().lines_in_block(str);
+        }
+        
         Block& operator += (const std::string& str) {
             body += str;
             line_end += Breaker::get_instance().lines_in_block(str);
@@ -65,6 +67,12 @@ public:
             return *this;
         }
         explicit operator const char* () const { return body.c_str(); }
+
+        std::string body;
+        uint line_start;
+        uint line_end;
+        Type type;
+        Access access;
     };
 
     struct Definition {
@@ -114,6 +122,8 @@ public:
     std::queue<Block> split_in_blocks(const std::string& str) const;
 
     static Breaker& get_instance();
+
+    std::optional<Access> read_access(const std::string& string_access) const;
 
 protected:
     Breaker() = default;

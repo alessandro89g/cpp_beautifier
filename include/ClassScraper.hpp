@@ -66,8 +66,6 @@ public:
 protected:
     void scrape();
 
-
-
     Breaker::Type string_to_type(const std::string& type) const;
     
     void find_methods();

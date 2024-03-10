@@ -207,3 +207,28 @@ TEST(BreakerTest, SPLITINTO3LONGERBLOCKSANDMODIFYING) {
     EXPECT_EQ(blocks.front().line_end, 14);
     EXPECT_EQ(blocks.front().body, "float function3(float x, float y) {\n    float result = x * y;\n    return result;\n}");
 }   
+
+
+TEST(BreakerTest, READACCESS) {
+    Breaker& breaker = Breaker::get_instance();
+    std::optional<Breaker::Access> access = breaker.read_access("public:");
+    EXPECT_EQ(access.value(), Breaker::Access::PUBLIC);
+    access = breaker.read_access("protected:");
+    EXPECT_EQ(access.value(), Breaker::Access::PROTECTED);
+    access = breaker.read_access("private:");
+    EXPECT_EQ(access.value(), Breaker::Access::PRIVATE);
+    access = breaker.read_access("default:");
+    EXPECT_FALSE(access.has_value());
+}
+
+TEST(BreakerTest, READACCESSWITHTEXT) {
+    Breaker& breaker = Breaker::get_instance();
+    std::optional<Breaker::Access> access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\npublic:");
+    EXPECT_EQ(access.value(), Breaker::Access::PUBLIC);
+    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\nprotected:");
+    EXPECT_EQ(access.value(), Breaker::Access::PROTECTED);
+    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\nprivate:");
+    EXPECT_EQ(access.value(), Breaker::Access::PRIVATE);
+    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\ndefault:");
+    EXPECT_FALSE(access.has_value());
+}

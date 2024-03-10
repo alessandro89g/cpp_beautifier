@@ -58,17 +58,27 @@ void ClassScraper::find_classes() {
 queue<Breaker::Block> ClassScraper::break_into_blocks(const FileReader& file_reader) {
     size_t brakets = 0;
     queue<Breaker::Block> blocks;
-    string content = file_reader.get_file_content();
+    string content = file_reader.get_file_content(true);
 
     uint line_index = 0;
+    uint block_start = 0;
+    Access curren_access_type;
     for (size_t i = 0; i < content.size(); i++) {
         vector<char> buffer;
         buffer.reserve(200);
-        while(content[i] != ';') {
+        size_t brakets = 0;
+        while(content[i] != ';' && brakets != 0) {
+            if (content[i] == ':')
+                getAccessSpecifier(buffer); // Continue from here
             buffer.push_back(content[i]);
             i++;
             if (content[i] == '\n')
                 line_index++;
+            if (content[i] == '{') {
+                brakets++;
+            } else if (content[i] == '}') {
+                brakets--;
+            }
         }
         buffer.clear();
         blocks.emplace(string(buffer.begin(), buffer.end()), line_index);

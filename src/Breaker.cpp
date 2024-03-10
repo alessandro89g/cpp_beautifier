@@ -270,3 +270,29 @@ std::queue<Breaker::Block> Breaker::split_in_blocks(const std::string& str) cons
     }
     return blocks;
 }
+
+optional<Breaker::Access> Breaker::read_access(const std::string& text) const {
+    int i;
+    for (i = text.size()-1; i>=0; i--) {
+        if (text[i] == '\n') {
+            break;
+        }
+    }
+    i++;
+    if (i==0 && text[i] != 'p') {
+        return optional<Access>();
+    }
+    string string_access = text.substr(i, text.size() - i);
+
+    optional<Access> access = optional<Access>();
+    if (string_access == "public:") {
+        access = Access::PUBLIC;
+    } else if (string_access == "protected:") {
+        access = Access::PROTECTED;
+    } else if (string_access == "private:") {
+        access = Access::PRIVATE;
+    } else {
+        access = optional<Access>();
+    }
+    return access;
+}
