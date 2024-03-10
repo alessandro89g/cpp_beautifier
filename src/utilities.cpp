@@ -185,3 +185,20 @@ std::string remove_multiple_spaces_between_words(const std::string& string) {
     
     return result;
 }
+
+std::string read_till_eol(const std::string& content, size_t& index) {
+    std::string result;
+    while (content[index] != '\n') {
+        result += content[index];
+        index++;
+    }
+    result += '\n';
+    index++;
+    return result;
+}
+
+void append_string_to_vec_chars(std::vector<char>& vec, const std::string& str) {
+    for (const char& c : str) {
+        vec.push_back(c);
+    }
+}

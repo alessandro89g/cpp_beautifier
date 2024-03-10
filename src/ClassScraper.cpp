@@ -1,4 +1,5 @@
 #include "../include/ClassScraper.hpp"
+#include "../include/utilities.hpp"
 
 using namespace std;
 
@@ -37,7 +38,28 @@ void ClassScraper::find_methods() {
 
     while(regex_search(text,match,pattern)) {
         methods.push_back(match.str());
-        Method method = Breaker::get_instance().read_method(match.str(), 0, Access::PUBLIC);
+        Method method (std::move(Breaker::get_instance().read_method(match.str(), 0, Access::PUBLIC)));
+        cout << method.name << endl;    
+        cout << method.owner_class << endl;
+        cout << method.return_type << endl;
+        cout << method.args.size() << endl;
+        for (const string& arg : method.args) {
+            cout << arg << endl;
+        }
+        cout << method.pre_modifiers.size() << endl;
+        for (const Modifier& mod : method.pre_modifiers) {
+            cout << mod << endl;
+        }
+        cout << method.post_modifiers.size() << endl;
+        for (const Modifier& mod : method.post_modifiers) {
+            cout << mod << endl;
+        }
+        cout << method.definition_in_header << endl;
+        cout << method.body.body << endl;
+        cout << method.body.line_start << endl;
+        cout << method.body.line_end << endl;
+        cout << method.body.type << endl;
+
         text = match.suffix();
     }
 }
@@ -62,44 +84,31 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const FileReader& file_rea
 
     uint line_index = 0;
     uint block_start = 0;
-    Access curren_access_type;
+    Access current_access_type = Access::PUBLIC;
+    bool is_hashtag = false;
+    vector<char> buffer;
+    buffer.reserve(200);
     for (size_t i = 0; i < content.size(); i++) {
-        vector<char> buffer;
-        buffer.reserve(200);
-        size_t brakets = 0;
-        while(content[i] != ';' && brakets != 0) {
-            if (content[i] == ':')
-                getAccessSpecifier(buffer); // Continue from here
-            buffer.push_back(content[i]);
-            i++;
-            if (content[i] == '\n')
-                line_index++;
-            if (content[i] == '{') {
-                brakets++;
-            } else if (content[i] == '}') {
-                brakets--;
-            }
+        if (content[i] == '\n') {
+            line_index++;
         }
-        buffer.clear();
-        blocks.emplace(string(buffer.begin(), buffer.end()), line_index);
+
+        buffer.push_back(content[i]);
+        if (content[i] == '#') {
+            is_hashtag = true;
+            string hashtag_line = read_till_eol(content, i);
+            append_string_to_vec_chars(buffer, hashtag_line);
+            Block block(string(buffer.begin(), buffer.end()), line_index);
+            get_type(block);
+        } // comtinue
     }
     return blocks;
 }
 
 Breaker::Type ClassScraper::get_type(const Block& block) const {
     Type type;
-    // const string pattern_string = TYPE_RGX;
-    // smatch match;
-    // regex pattern(pattern_string);
-    // string text = block.body;
-
-    // uint line_start = block.line_start;
-    
-
-    // while(regex_search(text,match,pattern)) {
-    //     types.push_back(Breaker::get_instance().read_type(match.str()));
-    //     text = match.suffix();
-    // }
+    smatch match;
+    // regex pattern(INCLUDE); // continue
 
     return type;
 }

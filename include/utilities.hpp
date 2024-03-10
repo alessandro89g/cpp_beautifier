@@ -35,4 +35,8 @@ std::string string_join(const std::vector<std::string>& strings, const std::stri
 
 std::string remove_multiple_spaces_between_words(const std::string& string);
 
+std::string read_till_eol(const std::string& content, size_t& index);
+
+void append_string_to_vec_chars(std::vector<char>& vec, const std::string& str);
+
 #endif // UTILITIES_H

@@ -88,6 +88,7 @@ public:
     
     struct Include {
         std::string name;
+        uint line_start;
         bool is_system;
     };
 
