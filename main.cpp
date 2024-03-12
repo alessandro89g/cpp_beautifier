@@ -59,6 +59,17 @@ int main(int argc, char const *argv[]) {
     DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
+
+    blocks = class_scraper.break_into_blocks(FileReader(argv[2]));
+    block_number = blocks.size();
+    while(!blocks.empty()) {
+        DEBUG("=====================================")
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end << ": \n" << blocks.front().body)
+        blocks.pop();
+    }
+    DEBUG("Number of blocks: " << block_number)
+    DEBUG("=====================================")
+
     return 1;
 
     size_t pos = 0;
