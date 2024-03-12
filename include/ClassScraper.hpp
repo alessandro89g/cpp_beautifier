@@ -63,7 +63,8 @@ public:
 
     std::queue<Breaker::Block> break_into_blocks(const std::string& content);
     std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);    
-    Breaker::Type get_type(const Block& block) const;
+    void read_and_parse_blocks();
+
 protected:
     void scrape();
 
@@ -77,6 +78,11 @@ protected:
     std::vector<std::string> methods;
     std::vector<std::string> members;
     std::vector<std::string> namespaces;
+
+    std::vector<Include> _includes;
+    std::vector<Line> _extra_lines;
+    std::vector<Class> _classes;
+
     HeaderFile _header;
     SourceFile _source;
     Class _class;

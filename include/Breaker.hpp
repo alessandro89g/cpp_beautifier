@@ -113,6 +113,8 @@ public:
     Method read_method(const std::string& string_method, uint line_start, Access access) const;
     Method read_method(const Block& block, Access access) const;
 
+    Include read_include(const std::string& string_include) const;
+
     std::string read_body(const std::string& string_method) const;
 
     std::queue<Block> split_in_blocks(const std::string& str) const;

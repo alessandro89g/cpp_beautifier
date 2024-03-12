@@ -129,20 +129,25 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
     return blocks;
 }
 
-Breaker::Type ClassScraper::get_type(const Block& block) const {
-    Type type;
-    // const string pattern_string = TYPE_RGX;
-    // smatch match;
-    // regex pattern(pattern_string);
-    // string text = block.body;
+void ClassScraper::read_and_parse_blocks() {
+    vector<Block> header_blocks = break_into_blocks(_header.header_reader->get_file_content());
+    vector<Block> source_blocks = break_into_blocks(_source.source_reader->get_file_content());
 
-    // uint line_start = block.line_start;
-    
-
-    // while(regex_search(text,match,pattern)) {
-    //     types.push_back(Breaker::get_instance().read_type(match.str()));
-    //     text = match.suffix();
-    // }
-
-    return type;
+    for (auto& block : header_blocks) {
+        if (block.body.find("#include") != string::npos) {
+            Include include = Breaker::get_instance().read_include(block.body, block.line_start); 
+            _header.includes.push_back(std::move(include));
+            continue;
+        }
+        if (block.body.find("#") != string::npos) {
+            Line line = Line(block.body, block.line_start);
+            _includes.push_back(std::move(line));
+        }
+        if (block.body.find("namespace") != string::npos) {
+            _header.namespaces.push_back(Breaker::get_instance().read_namespace(block.body, block.line_start, block.access));
+        }
+        if (block.body.find("public:") != string::npos) {
+            _header.extra_lines.push_back(Breaker::get_instance().read_line(block.body, block.line_start, block.access));
+        }
+    }
 }
