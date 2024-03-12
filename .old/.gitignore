@@ -1,7 +1,0 @@
-build/*
-cpp_beautifier
-.vscode
-build
-.vscode/*
-.o
-ClassScraper
