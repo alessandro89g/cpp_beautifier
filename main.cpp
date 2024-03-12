@@ -16,14 +16,14 @@ int main(int argc, char const *argv[]) {
         DEBUG("Usage: " << argv[0] << " <header_file> <source_file>")
         return 1;
     }
-    ClassScraper file_reader(argv[1], argv[2]);
+    ClassScraper class_scraper(argv[1], argv[2]);
 
-    string header = file_reader.get_header_content();
+    string header = class_scraper.get_header_content();
     DEBUG("Header: " << header)
     DEBUG("Lines: " <<  string_split(header).size())
     DEBUG("=====================================")
 
-    queue<Breaker::Block> blocks = file_reader.split_in_blocks(header);
+    queue<Breaker::Block> blocks = class_scraper.split_in_blocks(header);
     size_t block_number = blocks.size();
     while(!blocks.empty()) {
         DEBUG("=====================================")
@@ -33,12 +33,23 @@ int main(int argc, char const *argv[]) {
     DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
-    string source = file_reader.get_source_content();
+    string source = class_scraper.get_source_content();
     DEBUG("Source: " << source)
     DEBUG("Lines: " <<  string_split(source).size())
     DEBUG("=====================================")
 
-    blocks = file_reader.split_in_blocks(source);
+    blocks = class_scraper.split_in_blocks(source);
+    block_number = blocks.size();
+    while(!blocks.empty()) {
+        DEBUG("=====================================")
+        DEBUG("Block from line "<< blocks.front().line_start << " until line " << blocks.front().line_end << ": \n" << blocks.front().body)
+        blocks.pop();
+    }
+    DEBUG("Number of blocks: " << block_number)
+    DEBUG("=====================================")
+
+
+    blocks = class_scraper.break_into_blocks(FileReader(argv[1]));
     block_number = blocks.size();
     while(!blocks.empty()) {
         DEBUG("=====================================")
@@ -51,13 +62,13 @@ int main(int argc, char const *argv[]) {
     return 1;
 
     size_t pos = 0;
-    for (const string& method : file_reader.get_methods()) {
+    for (const string& method : class_scraper.get_methods()) {
         pos++;
         DEBUG("Method " << pos << ": " << method)
     }
 
     pos = 0;
-    for (const string& class_ : file_reader.get_classes()) {
+    for (const string& class_ : class_scraper.get_classes()) {
         pos++;
         DEBUG("Class " << pos << ": " << class_)
     }

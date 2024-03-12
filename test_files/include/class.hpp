@@ -11,6 +11,11 @@
 
 namespace fs = std::filesystem;
 
+/* Questo è un commento 
+   su piu right
+*/ 
+
+
 class AA {
 
 };

@@ -49,10 +49,7 @@ public:
 
     struct Block {
         Block() = default;
-        Block(const std::string& str, uint line_start) : body(str), line_start(line_start) {
-            line_end = line_start + Breaker::get_instance().lines_in_block(str);
-        }
-        Block(const std::string& str, uint line_start, Type type) : body(str), line_start(line_start), type(type) {
+        Block(const std::string& str, uint line_start, Access access = Access::PUBLIC) : body(str), line_start(line_start), access(access) {
             line_end = line_start + Breaker::get_instance().lines_in_block(str);
         }
         
@@ -71,7 +68,6 @@ public:
         std::string body;
         uint line_start;
         uint line_end;
-        Type type;
         Access access;
     };
 

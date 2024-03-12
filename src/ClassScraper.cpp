@@ -56,32 +56,75 @@ void ClassScraper::find_classes() {
 
 
 queue<Breaker::Block> ClassScraper::break_into_blocks(const FileReader& file_reader) {
+    return break_into_blocks(file_reader.get_file_content(true));
+}
+
+
+queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
     size_t brakets = 0;
     queue<Breaker::Block> blocks;
-    string content = file_reader.get_file_content(true);
 
-    uint line_index = 0;
     uint block_start = 0;
-    Access curren_access_type;
-    for (size_t i = 0; i < content.size(); i++) {
-        vector<char> buffer;
-        buffer.reserve(200);
+    Access current_access_type;
+
+    vector<string> lines = string_split(content);
+
+    for (size_t line_index = 0; line_index < lines.size(); line_index++) {
+        block_start = line_index + 1;
+        string buffer = lines[line_index];
         size_t brakets = 0;
-        while(content[i] != ';' && brakets != 0) {
-            if (content[i] == ':')
-                getAccessSpecifier(buffer); // Continue from here
-            buffer.push_back(content[i]);
-            i++;
-            if (content[i] == '\n')
-                line_index++;
-            if (content[i] == '{') {
-                brakets++;
-            } else if (content[i] == '}') {
-                brakets--;
-            }
+
+        if (remove_leading_trailing_spaces(buffer) == "" && brakets == 0) {
+            continue;
         }
-        buffer.clear();
-        blocks.emplace(string(buffer.begin(), buffer.end()), line_index);
+        
+        bool starts_w_hash = starts_with(buffer, "#");
+        bool starts_w_line_comment = starts_with(buffer, "//");
+        bool starts_w_block_comment = starts_with(buffer, "/*");
+        auto ends_w_semicol = [&buffer] () ->bool {
+            return ends_with(buffer, ";");
+        };
+        auto ends_w_braket = [&buffer] () ->bool {
+            return ends_with(buffer, "{");
+        };
+
+        if (starts_w_hash && brakets == 0) {
+            buffer = remove_leading_trailing_spaces(buffer);
+            blocks.emplace(buffer, block_start, Access::PUBLIC);
+            continue;
+        }
+
+        if (starts_w_line_comment && brakets == 0) {
+            blocks.emplace(buffer, block_start, Access::PUBLIC);
+            continue;
+        }
+        if (starts_w_block_comment && brakets == 0) {
+            while (lines[++line_index].find("*/") == string::npos) {
+                buffer += '\n' + lines[line_index];
+            }
+            buffer += '\n' + lines[line_index];
+            blocks.emplace(buffer, block_start, Access::PUBLIC);
+            continue;
+        }
+
+        while(!ends_w_semicol() && !ends_w_braket()) {
+            buffer += '\n' + lines[++line_index];
+        }
+
+        if (parentheses_balance(buffer, '{') != 0) {
+            while (parentheses_balance(buffer, '{') != 0) {
+                buffer += '\n' + lines[++line_index];
+            }
+            blocks.emplace(buffer, block_start, Access::PUBLIC);
+            continue;
+        }
+        if (read_access(buffer).has_value()) {
+            auto new_access = read_access(buffer);
+            if (new_access.has_value())
+                current_access_type = new_access.value();
+            continue;
+        }
+        blocks.emplace(buffer, block_start, current_access_type);
     }
     return blocks;
 }

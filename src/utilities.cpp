@@ -185,3 +185,19 @@ std::string remove_multiple_spaces_between_words(const std::string& string) {
     
     return result;
 }
+
+bool starts_with(const std::string& string, const std::string& start) {
+    if (string.size() < start.size()) {
+        return false;
+    }
+    std::string cleaned_string = remove_leading_trailing_spaces(string);
+    return cleaned_string.substr(0, start.size()) == start;
+}
+
+bool ends_with(const std::string& string, const std::string& end) {
+    if (string.size() < end.size()) {
+        return false;
+    }
+    std::string cleaned_string = remove_trailing_spaces(string);
+    return cleaned_string.substr(cleaned_string.size() - end.size(), end.size()) == end;
+}

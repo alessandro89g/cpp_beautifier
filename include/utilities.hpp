@@ -35,4 +35,8 @@ std::string string_join(const std::vector<std::string>& strings, const std::stri
 
 std::string remove_multiple_spaces_between_words(const std::string& string);
 
+bool starts_with(const std::string& string, const std::string& start);
+
+bool ends_with(const std::string& string, const std::string& end);
+
 #endif // UTILITIES_H

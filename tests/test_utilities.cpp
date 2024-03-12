@@ -202,3 +202,51 @@ TEST(RemoveTrailingNewLinesTest, MultipleSpacesBetweenWordsAndLeadingSpaces) {
     std::string result = remove_multiple_spaces_between_words(str);
     ASSERT_EQ(result, "    Hello World This Is A Test");
 }
+
+TEST(StartsWith, StartsWith) {
+    std::string str = "Hello World";
+    bool result = starts_with(str, "Hello");
+    ASSERT_TRUE(result);
+}
+
+TEST(StartsWith, DoesNotStartWith) {
+    std::string str = "Hello World";
+    bool result = starts_with(str, "World");
+    ASSERT_FALSE(result);
+}
+
+TEST(StartsWith, EmptyString) {
+    std::string str = "";
+    bool result = starts_with(str, "Hello");
+    ASSERT_FALSE(result);
+}
+
+TEST(StartsWith, StringWithLeadingSpacesAndTabs) {
+    std::string str = "    \tHello World";
+    bool result = starts_with(str, "Hello");
+    ASSERT_TRUE(result);
+}
+
+TEST(EndsWith, EndsWith) {
+    std::string str = "Hello World";
+    bool result = ends_with(str, "World");
+    ASSERT_TRUE(result);
+}
+
+TEST(EndsWith, DoesNotEndWith) {
+    std::string str = "Hello World";
+    bool result = ends_with(str, "Hello");
+    ASSERT_FALSE(result);
+}
+
+TEST(EndsWith, EmptyString) {
+    std::string str = "";
+    bool result = ends_with(str, "Hello");
+    ASSERT_FALSE(result);
+}
+
+TEST(EndsWith, StringWithTrailingSpacesAndTabs) {
+    std::string str = "Hello World    \t";
+    bool result = ends_with(str, "World");
+    ASSERT_TRUE(result);
+}
