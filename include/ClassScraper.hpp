@@ -20,17 +20,8 @@ public:
     std::string get_header_content() const;
     std::string get_source_content() const;
 
-    struct Class : public Definition {
-    private:
-        std::vector<Class> _inherits_from;
-        std::vector<Member> _members;
-        std::vector<Method> _methods;
-        std::vector<Constructor> _constructors;
-        Destructor _destructors;
-        std::vector<Class> _nested_classes;
-    };
-
     struct Line {
+        Line(const std::string& content, uint line_number) : content(content), line_number(line_number) {}
         std::string content;
         uint line_number;
         operator std::string () const { return content; }
@@ -68,7 +59,11 @@ public:
 protected:
     void scrape();
 
-    Breaker::Type string_to_type(const std::string& type) const;
+    Breaker::Type get_block_type(const Block& block) const;
+    bool block_is_comment       (const Block& block) const;
+    bool block_is_include       (const Block& block) const;
+    bool block_is_class         (const Block& block) const;
+    bool block_is_method        (const Block& block) const;
     
     void find_methods();
 
@@ -82,6 +77,7 @@ protected:
     std::vector<Include> _includes;
     std::vector<Line> _extra_lines;
     std::vector<Class> _classes;
+    std::vector<Method> _methods;
 
     HeaderFile _header;
     SourceFile _source;

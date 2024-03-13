@@ -61,7 +61,6 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const FileReader& file_rea
 
 
 queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
-    size_t brakets = 0;
     queue<Breaker::Block> blocks;
 
     uint block_start = 0;
@@ -130,24 +129,77 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
 }
 
 void ClassScraper::read_and_parse_blocks() {
-    vector<Block> header_blocks = break_into_blocks(_header.header_reader->get_file_content());
-    vector<Block> source_blocks = break_into_blocks(_source.source_reader->get_file_content());
+    queue<Block> header_blocks 
+        = break_into_blocks(_header.header_reader->get_file_content(true));
+    // queue<Block> source_blocks = break_into_blocks(_source.source_reader->get_file_content());
 
-    for (auto& block : header_blocks) {
-        if (block.body.find("#include") != string::npos) {
-            Include include = Breaker::get_instance().read_include(block.body, block.line_start); 
-            _header.includes.push_back(std::move(include));
-            continue;
+    while (header_blocks.size()) {
+        Block block = header_blocks.front();
+        Type type = get_block_type(block);
+
+        switch (type) {
+            case Type::COMMENT: {
+                uint line_start = block.line_start;
+                for (const string& s : string_split(block.body,"\n")) {
+                    Line line = Line(s, line_start++);
+                    _extra_lines.push_back(move(line));
+                }
+                break;
+            }
+            case Type::INCLUDE: {
+                Include include = read_include(block); 
+                _includes.push_back(move(include));
+                break;
+            }
+            case Type::CLASS: {
+                uint i = 0;
+                Class class_ = read_class(block, Access::PUBLIC);
+                _classes.push_back(move(class_));
+                break;
+            }
+            case Type::METHOD: {
+                Method method = read_method(block, Access::PUBLIC);
+                _methods.push_back(move(method));
+                break;
+            }
+            default: {
+                Line line = Line(block.body, block.line_start);
+                _extra_lines.push_back(move(line));
+                break;
+            }
         }
-        if (block.body.find("#") != string::npos) {
-            Line line = Line(block.body, block.line_start);
-            _includes.push_back(std::move(line));
-        }
-        if (block.body.find("namespace") != string::npos) {
-            _header.namespaces.push_back(Breaker::get_instance().read_namespace(block.body, block.line_start, block.access));
-        }
-        if (block.body.find("public:") != string::npos) {
-            _header.extra_lines.push_back(Breaker::get_instance().read_line(block.body, block.line_start, block.access));
-        }
+        header_blocks.pop();
     }
+}
+
+Breaker::Type ClassScraper::get_block_type(const Block& block) const {
+    if (block_is_comment(block)) {
+        return Type::COMMENT;
+    }
+    if (block_is_include(block)) {
+        return Type::INCLUDE;
+    }
+    if (block_is_class(block)) {
+        return Type::CLASS;
+    }
+    if (block_is_method(block)) {
+        return Type::METHOD;
+    }
+    return Type::OTHER;    
+}
+
+bool ClassScraper::block_is_comment(const Block& block) const {
+    return starts_with(block.body, "//") || starts_with(block.body, "/*");
+}
+
+bool ClassScraper::block_is_include(const Block& block) const {
+    return starts_with(block.body, "#include");
+}
+
+bool ClassScraper::block_is_class(const Block& block) const {
+    return starts_with(block.body, "class");
+}
+
+bool ClassScraper::block_is_method(const Block& block) const {
+    return regex_match(block.body, regex(METHOD_RGX));
 }

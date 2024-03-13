@@ -70,6 +70,8 @@ int main(int argc, char const *argv[]) {
     DEBUG("Number of blocks: " << block_number)
     DEBUG("=====================================")
 
+    class_scraper.read_and_parse_blocks();
+
     return 1;
 
     size_t pos = 0;

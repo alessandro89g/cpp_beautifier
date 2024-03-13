@@ -17,6 +17,7 @@ void FileReader::open_and_read_file(const string& file_path) {
     if (!file.is_open()) {
         throw std::runtime_error("File not found");
     }
+    file_content_original.clear();
     while (getline(file, line)) {
         file_content_original += line + '\n';
     }

@@ -296,3 +296,11 @@ optional<Breaker::Access> Breaker::read_access(const std::string& text) const {
     }
     return access;
 }
+
+Breaker::Class Breaker::read_class(const Block& block, Access access) const {
+    return Class();
+}
+
+Breaker::Include Breaker::read_include(const Block& block) const {
+    return Include();
+}

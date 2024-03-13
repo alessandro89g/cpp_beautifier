@@ -25,6 +25,8 @@ public:
         DESTRUCTOR,
         METHOD,
         MEMBER,
+        COMMENT,
+        ACCESS,
         OTHER
     };
 
@@ -52,6 +54,7 @@ public:
         Block(const std::string& str, uint line_start, Access access = Access::PUBLIC) : body(str), line_start(line_start), access(access) {
             line_end = line_start + Breaker::get_instance().lines_in_block(str);
         }
+        ~Block() {}
         
         Block& operator += (const std::string& str) {
             body += str;
@@ -72,6 +75,8 @@ public:
     };
 
     struct Definition {
+        Definition() = default;
+        ~Definition() = default;
         Type type;
         Access access;
         std::string name;
@@ -108,12 +113,27 @@ public:
         std::string type;
     };
 
+    struct Class : public Definition {
+        Class() = default;
+    private:
+        std::vector<Class> _inherits_from;
+        std::vector<Member> _members;
+        std::vector<Method> _methods;
+        std::vector<Constructor> _constructors;
+        Destructor _destructors;
+        std::vector<Class> _nested_classes;
+    };
+
 public:
+
+    Include read_include(const Block& block) const;
+    Include read_include(const std::string& string_include) const;
 
     Method read_method(const std::string& string_method, uint line_start, Access access) const;
     Method read_method(const Block& block, Access access) const;
 
-    Include read_include(const std::string& string_include) const;
+    Class read_class(const Block& block, Access access) const;
+
 
     std::string read_body(const std::string& string_method) const;
 
