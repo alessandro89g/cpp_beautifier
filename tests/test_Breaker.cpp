@@ -3,7 +3,7 @@
 
 TEST(BreakerTest, ReadMethod) {
     Breaker& breaker = Breaker::get_instance();
-    Breaker::Method method = breaker.read_method("int main(int argc, char** argv) {", 0, Breaker::Access::PUBLIC);
+    Breaker::Method method = breaker.extract_method("int main(int argc, char** argv) {", 0, Breaker::Access::PUBLIC);
     EXPECT_EQ(method.name, "main");
     EXPECT_EQ(method.return_type, "int");
     EXPECT_EQ(method.args.size(), 2);
@@ -21,7 +21,7 @@ TEST(BreakerTest, ReadMethodWithFiveArguments) {
                        "    double result = sum + product + difference + quotient;\n"
                        "    return result;\n"
                        "}";
-    Breaker::Method method = breaker.read_method(code, 0, Breaker::Access::PUBLIC);
+    Breaker::Method method = breaker.extract_method(code, 0, Breaker::Access::PUBLIC);
     EXPECT_EQ(method.name, "calculate");
     EXPECT_EQ(method.return_type, "double");
     EXPECT_EQ(method.args.size(), 5);
@@ -211,24 +211,24 @@ TEST(BreakerTest, SPLITINTO3LONGERBLOCKSANDMODIFYING) {
 
 TEST(BreakerTest, READACCESS) {
     Breaker& breaker = Breaker::get_instance();
-    std::optional<Breaker::Access> access = breaker.read_access("public:");
+    std::optional<Breaker::Access> access = breaker.extract_access("public:");
     EXPECT_EQ(access.value(), Breaker::Access::PUBLIC);
-    access = breaker.read_access("protected:");
+    access = breaker.extract_access("protected:");
     EXPECT_EQ(access.value(), Breaker::Access::PROTECTED);
-    access = breaker.read_access("private:");
+    access = breaker.extract_access("private:");
     EXPECT_EQ(access.value(), Breaker::Access::PRIVATE);
-    access = breaker.read_access("default:");
+    access = breaker.extract_access("default:");
     EXPECT_FALSE(access.has_value());
 }
 
 TEST(BreakerTest, READACCESSWITHTEXT) {
     Breaker& breaker = Breaker::get_instance();
-    std::optional<Breaker::Access> access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\npublic:");
+    std::optional<Breaker::Access> access = breaker.extract_access("int main(int argc, char** argv) {\n    return 0;\n}\npublic:");
     EXPECT_EQ(access.value(), Breaker::Access::PUBLIC);
-    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\nprotected:");
+    access = breaker.extract_access("int main(int argc, char** argv) {\n    return 0;\n}\nprotected:");
     EXPECT_EQ(access.value(), Breaker::Access::PROTECTED);
-    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\nprivate:");
+    access = breaker.extract_access("int main(int argc, char** argv) {\n    return 0;\n}\nprivate:");
     EXPECT_EQ(access.value(), Breaker::Access::PRIVATE);
-    access = breaker.read_access("int main(int argc, char** argv) {\n    return 0;\n}\ndefault:");
+    access = breaker.extract_access("int main(int argc, char** argv) {\n    return 0;\n}\ndefault:");
     EXPECT_FALSE(access.has_value());
 }

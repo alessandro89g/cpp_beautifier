@@ -117,31 +117,31 @@ public:
         Class() = default;
     private:
         std::vector<Class> _inherits_from;
-        std::vector<Member> _members;
-        std::vector<Method> _methods;
         std::vector<Constructor> _constructors;
         Destructor _destructors;
         std::vector<Class> _nested_classes;
+        std::vector<Method> _methods;
+        std::vector<Member> _members;
     };
 
 public:
 
-    Include read_include(const Block& block) const;
-    Include read_include(const std::string& string_include) const;
+    Include extract_include(const Block& block) const;
+    Include extract_include(const std::string& string_include) const;
 
-    Method read_method(const std::string& string_method, uint line_start, Access access) const;
-    Method read_method(const Block& block, Access access) const;
+    Method extract_method(const std::string& string_method, uint line_start, Access access) const;
+    Method extract_method(const Block& block, Access access) const;
 
-    Class read_class(const Block& block, Access access) const;
+    Class extract_class(const Block& block, Access access) const;
 
 
-    std::string read_body(const std::string& string_method) const;
+    std::string extract_body(const std::string& string_method) const;
 
     std::queue<Block> split_in_blocks(const std::string& str) const;
 
     static Breaker& get_instance();
 
-    std::optional<Access> read_access(const std::string& string_access) const;
+    std::optional<Access> extract_access(const std::string& string_access) const;
 
 protected:
     Breaker() = default;
@@ -149,13 +149,13 @@ protected:
     Breaker(Breaker&& breaker) = delete;
     Breaker operator = (const Breaker& breaker) = delete;
 
-    std::vector<Modifier> read_modifiers(const std::string& string_modifiers) const;
+    std::vector<Modifier> extract_modifiers(const std::string& string_modifiers) const;
 
     void clear_string(std::string& str) const;
 
     uint lines_in_block(const std::string& block) const;
 
-    std::vector<std::string> read_args(std::string string_args) const;
+    std::vector<std::string> extract_args(std::string string_args) const;
 
     std::string method_to_string(const Method& method, bool more_info) const;
 

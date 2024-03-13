@@ -3,7 +3,9 @@
 using namespace std;
 
 ClassScraper::ClassScraper(const string& header, const string& source) : 
-    _header(header), _source(source) 
+    _includes(), _extra_lines(), _methods(), _classes(),
+    _header(header, _includes, _extra_lines, _methods, _classes), 
+    _source(source, _includes, _extra_lines, _methods) 
 {
     scrape();
 }
@@ -17,11 +19,11 @@ vector<string> ClassScraper::get_classes() {
 }
 
 string ClassScraper::get_header_content() const {
-    return _header.header_reader->get_file_content();
+    return _header.get_file_content();
 }
 
 string ClassScraper::get_source_content() const {
-    return _source.source_reader->get_file_content();
+    return _source.get_file_content();
 }
 
 void ClassScraper::scrape() {
@@ -33,11 +35,11 @@ void ClassScraper::find_methods() {
     const string pattern_string = METHOD_RGX;
     smatch match;
     regex pattern(pattern_string);
-    string text = _header.header_reader->get_file_content();
+    string text = _header.get_file_content();
 
     while(regex_search(text,match,pattern)) {
         methods.push_back(match.str());
-        Method method = Breaker::get_instance().read_method(match.str(), 0, Access::PUBLIC);
+        Method method = Breaker::get_instance().extract_method(match.str(), 0, Access::PUBLIC);
         text = match.suffix();
     }
 }
@@ -46,7 +48,7 @@ void ClassScraper::find_classes() {
     const string pattern_string = CLASS_NAME;
     smatch match;
     regex pattern(pattern_string);
-    string text = _header.header_reader->get_file_content();
+    string text = _header.get_file_content();
 
     while(regex_search(text,match,pattern)) {
         classes.push_back(match.str());
@@ -117,8 +119,8 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
             blocks.emplace(buffer, block_start, Access::PUBLIC);
             continue;
         }
-        if (read_access(buffer).has_value()) {
-            auto new_access = read_access(buffer);
+        if (extract_access(buffer).has_value()) {
+            auto new_access = extract_access(buffer);
             if (new_access.has_value())
                 current_access_type = new_access.value();
             continue;
@@ -130,7 +132,7 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
 
 void ClassScraper::read_and_parse_blocks() {
     queue<Block> header_blocks 
-        = break_into_blocks(_header.header_reader->get_file_content(true));
+        = break_into_blocks(_header.get_file_content(true));
     // queue<Block> source_blocks = break_into_blocks(_source.source_reader->get_file_content());
 
     while (header_blocks.size()) {
@@ -147,18 +149,17 @@ void ClassScraper::read_and_parse_blocks() {
                 break;
             }
             case Type::INCLUDE: {
-                Include include = read_include(block); 
+                Include include = extract_include(block); 
                 _includes.push_back(move(include));
                 break;
             }
             case Type::CLASS: {
-                uint i = 0;
-                Class class_ = read_class(block, Access::PUBLIC);
+                Class class_ = extract_class(block, Access::PUBLIC);
                 _classes.push_back(move(class_));
                 break;
             }
             case Type::METHOD: {
-                Method method = read_method(block, Access::PUBLIC);
+                Method method = extract_method(block, Access::PUBLIC);
                 _methods.push_back(move(method));
                 break;
             }

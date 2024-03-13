@@ -8,11 +8,11 @@ Breaker& Breaker::get_instance() {
     return instance;
 }
 
-Breaker::Method Breaker::read_method(const Block& block, Access access) const {
-    return read_method(static_cast<const char*>(block), block.line_start, access);
+Breaker::Method Breaker::extract_method(const Block& block, Access access) const {
+    return extract_method(static_cast<const char*>(block), block.line_start, access);
 }
 
-Breaker::Method Breaker::read_method(const string& string_method, uint line_start, Access access) const {
+Breaker::Method Breaker::extract_method(const string& string_method, uint line_start, Access access) const {
 //  DEBUG("===============================")
 //  DEBUG(string_method)
     Method method;
@@ -20,7 +20,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
     method.body.line_end = line_start + lines_in_block(string_method);
     method.access = access;
     method.type = Type::METHOD;
-    method.body = read_body(string_method);
+    method.body = extract_body(string_method);
 
     if (string_method.find_last_of(';') != string::npos) {
         method.definition_in_header = false;
@@ -37,7 +37,7 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
             post_modifiers = post_modifiers.substr(0, post_modifiers.find(";"));
         }
         if (post_modifiers != "") {
-            method.post_modifiers = read_modifiers(post_modifiers);
+            method.post_modifiers = extract_modifiers(post_modifiers);
         }
     }
 //  DEBUG("POST MODIFIERS: " << post_modifiers)
@@ -51,15 +51,15 @@ Breaker::Method Breaker::read_method(const string& string_method, uint line_star
         head = head.substr(0, head.find_last_of(" "));
     else
         head = "";
-    method.pre_modifiers = read_modifiers(head);
-    method.args = read_args(string_method.substr(string_method.find("("), string_method.find(")") - string_method.find("(") + 2));
+    method.pre_modifiers = extract_modifiers(head);
+    method.args = extract_args(string_method.substr(string_method.find("("), string_method.find(")") - string_method.find("(") + 2));
 
 //  DEBUG(method_to_string(method, true))
 
     return method;
 }
 
-vector<Breaker::Modifier> Breaker::read_modifiers(const string& string_modifiers) const {
+vector<Breaker::Modifier> Breaker::extract_modifiers(const string& string_modifiers) const {
     vector<Modifier> modifiers;
     vector<string> tokens = string_split(string_modifiers, " ");
     for (string& token : tokens) {
@@ -112,7 +112,7 @@ uint Breaker::lines_in_block(const string& block) const {
 }
 
 
-vector<string> Breaker::read_args(string string_args) const {
+vector<string> Breaker::extract_args(string string_args) const {
     string_args = string_args.substr(1, string_args.find(")")-1);
     vector<string> args = string_split(string_args, ",");
     for (string& arg : args) {
@@ -122,7 +122,7 @@ vector<string> Breaker::read_args(string string_args) const {
     return args;
 }
 
-string Breaker::read_body(const string& string_method) const {
+string Breaker::extract_body(const string& string_method) const {
     if (string_method.find("{") == string::npos) {
         return "";
     }
@@ -271,7 +271,7 @@ std::queue<Breaker::Block> Breaker::split_in_blocks(const std::string& str) cons
     return blocks;
 }
 
-optional<Breaker::Access> Breaker::read_access(const std::string& text) const {
+optional<Breaker::Access> Breaker::extract_access(const std::string& text) const {
     int i;
     for (i = text.size()-1; i>=0; i--) {
         if (text[i] == '\n') {
@@ -297,10 +297,13 @@ optional<Breaker::Access> Breaker::read_access(const std::string& text) const {
     return access;
 }
 
-Breaker::Class Breaker::read_class(const Block& block, Access access) const {
-    return Class();
+Breaker::Include Breaker::extract_include(const Block& block) const {
+    if (block.body.find("<") != string::npos) 
+        return Include({block.body, true});
+    return Include({block.body, false});
 }
 
-Breaker::Include Breaker::read_include(const Block& block) const {
-    return Include();
+Breaker::Class Breaker::extract_class(const Block& block, Access access) const {
+
+    return Class();
 }

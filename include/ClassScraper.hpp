@@ -4,6 +4,7 @@
 #include "Breaker.hpp"
 #include <queue>
 #include <vector>
+#include <string>
 
 
 class ClassScraper : public Breaker {
@@ -14,7 +15,6 @@ public:
     ClassScraper(ClassScraper&& class_scraper) = delete;
 
     std::vector<std::string> get_methods();
-
     std::vector<std::string> get_classes();
 
     std::string get_header_content() const;
@@ -27,29 +27,49 @@ public:
         operator std::string () const { return content; }
     };
 
-    struct HeaderFile {
-        explicit HeaderFile(const std::string& name_with_path) 
-            : name_with_path(name_with_path), header_reader(std::make_unique<FileReader>(name_with_path)) {}
-        HeaderFile(HeaderFile&& header_file) :  name_with_path(header_file.name_with_path), header_reader(std::move(header_file.header_reader)),
-            includes(std::move(header_file.includes)), classes(std::move(header_file.classes)), extra_lines(std::move(header_file.extra_lines)) {}
-        std::string name_with_path;
-        std::vector<Include> _includes;
-        std::unique_ptr<FileReader> header_reader;
-        std::vector<Include> includes;
-        std::vector<Class> classes;
-        std::vector<Line> extra_lines; 
+
+    class CPP_File {
+    public:
+        CPP_File() = delete;
+        explicit CPP_File(const std::string& file, std::vector<Include>& includes, std::vector<Line>& lines, 
+            std::vector<Method>& methods) : _name_with_path(file), _reader(std::make_unique<FileReader>(file)),
+            _includes(includes), _extra_lines(lines), _methods(methods) {}
+        CPP_File(const CPP_File& ) = delete;
+        CPP_File(CPP_File&& ) = delete;
+
+        std::string get_file_content(bool original = false) const {
+            return _reader->get_file_content(original);
+        }
+
+    protected:
+        std::string _name_with_path;
+        std::unique_ptr<FileReader> _reader;
+        std::vector<Include>& _includes;
+        std::vector<Line>& _extra_lines; 
+        std::vector<Method>& _methods;
     };
 
-    struct SourceFile {
-        explicit SourceFile(const std::string& name_with_path) 
-            : name_with_path(name_with_path), source_reader(std::make_unique<FileReader>(name_with_path)) {}
-        SourceFile(SourceFile&& source_file) :  name_with_path(source_file.name_with_path), source_reader(std::move(source_file.source_reader)),
-                                                includes(std::move(source_file.includes)), methods(std::move(source_file.methods)), extra_lines(std::move(source_file.extra_lines)) {}
-        std::string name_with_path;
-        std::unique_ptr<FileReader> source_reader;
-        std::vector<Include> includes;
-        std::vector<Method> methods;
-        std::vector<Line> extra_lines; 
+    class HeaderFile : public CPP_File {
+    public:
+        explicit HeaderFile(const std::string& name_with_path, std::vector<Include>& includes, std::vector<Line>& lines, 
+            std::vector<Method>& methods, std::vector<Class>& classes) 
+            : CPP_File(name_with_path, includes, lines, methods), _classes(classes) {}
+        
+        HeaderFile(const HeaderFile& ) = delete;
+        HeaderFile(HeaderFile&& )  = delete;
+
+    private:
+        std::vector<Class>& _classes;
+    };
+
+    class SourceFile : public CPP_File {
+    public:
+        explicit SourceFile(const std::string& name_with_path, std::vector<Include>& includes, std::vector<Line>& lines, 
+            std::vector<Method>& methods) 
+            : CPP_File(name_with_path, includes, lines, methods) {}
+        
+        SourceFile(const SourceFile& ) = delete;
+        SourceFile(SourceFile&& ) = delete;
     };
 
     std::queue<Breaker::Block> break_into_blocks(const std::string& content);
@@ -76,8 +96,8 @@ protected:
 
     std::vector<Include> _includes;
     std::vector<Line> _extra_lines;
-    std::vector<Class> _classes;
     std::vector<Method> _methods;
+    std::vector<Class> _classes;
 
     HeaderFile _header;
     SourceFile _source;
