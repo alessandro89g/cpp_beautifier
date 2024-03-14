@@ -299,8 +299,8 @@ optional<Breaker::Access> Breaker::extract_access(const std::string& text) const
 
 Breaker::Include Breaker::extract_include(const Block& block) const {
     if (block.body.find("<") != string::npos) 
-        return Include({block.body, true});
-    return Include({block.body, false});
+        return Include(block.body, true, block.line_start);
+    return Include(block.body, false, block.line_start);
 }
 
 Breaker::Class Breaker::extract_class(const Block& block, Access access) const {

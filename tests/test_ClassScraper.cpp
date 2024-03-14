@@ -49,6 +49,20 @@ TEST(CLASS_SCRAPER_TEST, GET_HEADER_FILE_HEADERS) {
     
     auto includes = header.get_includes();
     DEBUG(includes.size())
-    for (size_t i=0; i<includes.size(); ++i)
-        ASSERT_EQ(includes[i], Includes[i]);
+    for (size_t i=0; i<includes.size(); ++i){
+        DEBUG(includes[i] << "   ===   " << Includes[i])
+        DEBUG(includes[i].is_system << "   ===   " << Includes[i].is_system)
+        DEBUG(includes[i].line_number << "   ===   " << Includes[i].line_number)
+        EXPECT_EQ(includes[i], Includes[i]);
+    }
+}
+
+TEST(CLASS_SCRAPER_TEST, GET_HEADER_FILE_EXTRA_LINES) {
+    const ClassScraper::HeaderFile& header = class_scraper.get_header();
+    
+    auto lines = header.get_extra_lines();
+    DEBUG(lines.size())
+    DEBUG(Extra_lines.size())
+    for (size_t i=0; i<lines.size(); ++i)
+        EXPECT_EQ(lines[i], Extra_lines[i]);
 }

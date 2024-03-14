@@ -1,25 +1,22 @@
 
 const vector<ClassScraper::Line> Extra_lines = {
     ClassScraper::Line("#ifndef BEAUTIFIER_HPP", 1),
-    ClassScraper::Line("#define BEAUTIFIER_HPP", 1),
-    ClassScraper::Line("namespace fs = std::filesystem;", 1),
-    ClassScraper::Line("#endif // BEAUTIFIER_HPP", 1)
+    ClassScraper::Line("#define BEAUTIFIER_HPP", 2),
+    ClassScraper::Line("//#include \"asd.h\"", 10),
+    ClassScraper::Line("namespace fs = std::filesystem;", 12),
+    ClassScraper::Line("/* Questo è un commento ", 14),
+    ClassScraper::Line("   su piu right", 15),
+    ClassScraper::Line("*/ ",16),
+    ClassScraper::Line("#endif // BEAUTIFIER_HPP", 118)
 };
 
 const vector<Breaker::Include> Includes = {
-    Breaker::Include("#include <string>", true),
-    Breaker::Include("#include <filesystem>", true),
-    Breaker::Include("#include <regex>", true),
-    Breaker::Include("#include <fstream>", true),
-    Breaker::Include("#include <iostream>", true),
-    Breaker::Include("#include <vector>", true)
-};
-
-const vector<ClassScraper::Line> Comments = {
-    ClassScraper::Line("//#include \"asd.h\"", 1),
-    ClassScraper::Line("/* Questo è un commento "
-    "   su piu right"
-    "*/ ",1)
+    Breaker::Include("#include <string>", true, 3),
+    Breaker::Include("#include <filesystem>", true, 4),
+    Breaker::Include("#include <regex>", true, 5),
+    Breaker::Include("#include <fstream>", true, 6),
+    Breaker::Include("#include <iostream>", true, 7),
+    Breaker::Include("#include <vector>", true, 8)
 };
 
 // class AA {

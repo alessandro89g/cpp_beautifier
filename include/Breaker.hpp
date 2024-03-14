@@ -88,15 +88,22 @@ public:
     };
     
     struct Include {
+        Include(const std::string& name, bool is_system, uint line_number) : name(name), is_system(is_system), line_number(line_number) {}
         operator const char* () const {
             return name.c_str();
         }
+        Include(const Include& o) : name(o.name), is_system(o.is_system), line_number(o.line_number) {}
+        Include(Include&& o) : name(o.name), is_system(o.is_system), line_number(o.line_number) {
+            o.name = "";
+            o.line_number = 0;
+        }
+
         bool operator == (const Include& other) const {
             return name == other.name && is_system == other.is_system && line_number == other.line_number;
         }
         std::string name;
-        uint line_number;
         bool is_system;
+        uint line_number;
     };
 
     struct Method : public Definition {

@@ -50,6 +50,10 @@ public:
             return _includes;
         }
 
+        std::vector<Line> get_extra_lines() const {
+            return _extra_lines;
+        }
+
     protected:
         std::string _name_with_path;
         std::unique_ptr<FileReader> _reader;
