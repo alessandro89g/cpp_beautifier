@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#include "ClassScraper_test_utilities.hpp"
+
 const string header_path = "test_files/include/class.hpp";
 const string source_path = "test_files/src/class.cpp";
 
@@ -47,8 +49,6 @@ TEST(CLASS_SCRAPER_TEST, GET_HEADER_FILE_HEADERS) {
     
     auto includes = header.get_includes();
     DEBUG(includes.size())
-    for (auto& include : includes) {
-        DEBUG(include)
-    }
-
+    for (size_t i=0; i<includes.size(); ++i)
+        ASSERT_EQ(includes[i], Includes[i]);
 }

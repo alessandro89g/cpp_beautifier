@@ -22,6 +22,9 @@ public:
 
     struct Line {
         Line(const std::string& content, uint line_number) : content(content), line_number(line_number) {}
+        bool operator == (const Line& other) const {
+            return content == other.content && line_number == other.line_number;
+        }
         std::string content;
         uint line_number;
         operator std::string () const { return content; }

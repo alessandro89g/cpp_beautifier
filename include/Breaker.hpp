@@ -91,7 +91,11 @@ public:
         operator const char* () const {
             return name.c_str();
         }
+        bool operator == (const Include& other) const {
+            return name == other.name && is_system == other.is_system && line_number == other.line_number;
+        }
         std::string name;
+        uint line_number;
         bool is_system;
     };
 
