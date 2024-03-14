@@ -64,6 +64,10 @@ $(BUILD_DIR)/test_FileReader: $(TEST_DIR)/test_FileReader.cpp $(BUILD_DIR)/FileR
 	@echo "Creating executable.."
 	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
 
+$(BUILD_DIR)/test_ClassScraper: $(TEST_DIR)/test_ClassScraper.cpp $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/utilities.o
+	@echo "Creating executable.."
+	${CC} ${CFLAGS} -o $@ $< $(BUILD_DIR)/ClassScraper.o $(BUILD_DIR)/Breaker.o $(BUILD_DIR)/FileReader.o $(BUILD_DIR)/utilities.o ${GOOGLE_TEST}
+
 
 run_test: $(BUILD_DIR)/test_utilities
 	@echo "Running tests.."

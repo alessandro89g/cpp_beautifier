@@ -28,6 +28,8 @@ public:
 
     std::string get_file_content(bool original = false) const;
 
+    std::string get_file_name() const;
+
     void export_file(const std::string& file_path, bool original = false) const;
 
     Type get_type() const { return type; }
@@ -39,6 +41,7 @@ protected:
     void modify_file(const std::string& file_string);
 
 private:
+    std::string _file_path;
     std::string file_content_original;
     std::string file_content_modified;
     Type type;

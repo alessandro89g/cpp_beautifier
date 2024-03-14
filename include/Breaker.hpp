@@ -88,6 +88,9 @@ public:
     };
     
     struct Include {
+        operator const char* () const {
+            return name.c_str();
+        }
         std::string name;
         bool is_system;
     };

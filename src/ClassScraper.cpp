@@ -18,17 +18,30 @@ vector<string> ClassScraper::get_classes() {
     return classes;
 }
 
-string ClassScraper::get_header_content() const {
-    return _header.get_file_content();
+string ClassScraper::get_header_content(bool original) const {
+    return _header.get_file_content(original);
 }
 
-string ClassScraper::get_source_content() const {
-    return _source.get_file_content();
+string ClassScraper::get_source_content(bool original) const {
+    return _source.get_file_content(original);
+}
+
+const ClassScraper::HeaderFile& ClassScraper::get_header() const {
+    return _header;
+}
+
+const ClassScraper::SourceFile& ClassScraper::get_source() const {
+    return _source;
+}
+
+ClassScraper::Class ClassScraper::get_class() const {
+    return _class;
 }
 
 void ClassScraper::scrape() {
     find_classes();
     find_methods();
+    read_and_parse_header();
 }
 
 void ClassScraper::find_methods() {
@@ -130,7 +143,7 @@ queue<Breaker::Block> ClassScraper::break_into_blocks(const string& content) {
     return blocks;
 }
 
-void ClassScraper::read_and_parse_blocks() {
+void ClassScraper::read_and_parse_header() {
     queue<Block> header_blocks 
         = break_into_blocks(_header.get_file_content(true));
     // queue<Block> source_blocks = break_into_blocks(_source.source_reader->get_file_content());

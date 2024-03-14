@@ -3,12 +3,16 @@
 
 using namespace std;
 
-FileReader::FileReader(const string& file_string) {
+FileReader::FileReader(const string& file_string) : _file_path(file_string) {
     open_and_read_file(file_string);
 }
 
 string FileReader::get_file_content(bool original) const {
     return (original ? file_content_original : file_content_modified);
+}
+
+string FileReader::get_file_name() const {
+    return _file_path;
 }
 
 void FileReader::open_and_read_file(const string& file_path) {

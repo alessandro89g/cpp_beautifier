@@ -17,8 +17,8 @@ public:
     std::vector<std::string> get_methods();
     std::vector<std::string> get_classes();
 
-    std::string get_header_content() const;
-    std::string get_source_content() const;
+    std::string get_header_content(bool original = false) const;
+    std::string get_source_content(bool original = false) const;
 
     struct Line {
         Line(const std::string& content, uint line_number) : content(content), line_number(line_number) {}
@@ -39,6 +39,12 @@ public:
 
         std::string get_file_content(bool original = false) const {
             return _reader->get_file_content(original);
+        }
+        std::string get_file_name() const {
+            return _name_with_path;
+        }
+        std::vector<Include> get_includes() const {
+            return _includes;
         }
 
     protected:
@@ -72,12 +78,24 @@ public:
         SourceFile(SourceFile&& ) = delete;
     };
 
-    std::queue<Breaker::Block> break_into_blocks(const std::string& content);
-    std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);    
-    void read_and_parse_blocks();
+    std::string get_header_file_name() const {
+        return _header.get_file_name();
+    }
+    std::string get_source_file_name() const {
+        return _source.get_file_name();
+    }
+    
+    
+    Class get_class() const;
+    const HeaderFile& get_header() const;
+    const SourceFile& get_source() const;
+
 
 protected:
     void scrape();
+    std::queue<Breaker::Block> break_into_blocks(const std::string& content);
+    std::queue<Breaker::Block> break_into_blocks(const FileReader& file_reader);    
+    void read_and_parse_header();
 
     Breaker::Type get_block_type(const Block& block) const;
     bool block_is_comment       (const Block& block) const;
@@ -86,7 +104,6 @@ protected:
     bool block_is_method        (const Block& block) const;
     
     void find_methods();
-
     void find_classes();
         
     std::vector<std::string> classes;
